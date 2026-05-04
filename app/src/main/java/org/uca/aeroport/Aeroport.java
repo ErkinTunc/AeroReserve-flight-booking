@@ -9,6 +9,11 @@ public class Aeroport {
     public Aeroport() {
     }
 
+    public Aeroport(String nom , String ville){
+        this.nom = nom;
+        this.ville = ville;
+    }
+
     public String getNom() {
         return nom;
     }
@@ -23,5 +28,11 @@ public class Aeroport {
 
     public void setVille(String ville) {
         this.ville = ville;
+    }
+
+    @Override
+
+    public String toString(){
+        return nom + " " + ville;
     }
 }
