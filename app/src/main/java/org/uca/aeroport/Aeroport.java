@@ -2,17 +2,24 @@ package org.uca.aeroport;
 
 public class Aeroport {
 
+    private String code;
+
     private String nom;
 
-    private String ville;
+    private Ville ville;
 
     public Aeroport() {
     }
 
-    public Aeroport(String nom , String ville){
+    public Aeroport(String code, String nom , Ville ville){
+        this.code = code;
         this.nom = nom;
         this.ville = ville;
     }
+
+    public String getCode(){ return code; }
+
+    public void setCode(String code){ this.code = code; }
 
     public String getNom() {
         return nom;
@@ -22,17 +29,17 @@ public class Aeroport {
         this.nom = nom;
     }
 
-    public String getVille() {
+    public Ville getVille() {
         return ville;
     }
 
-    public void setVille(String ville) {
+    public void setVille(Ville ville) {
         this.ville = ville;
     }
 
     @Override
 
     public String toString(){
-        return nom + " " + ville;
+        return code + " - " + nom + "(" + ville + ")";
     }
 }

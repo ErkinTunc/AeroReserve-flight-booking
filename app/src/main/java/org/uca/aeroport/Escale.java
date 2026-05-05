@@ -3,7 +3,7 @@ package org.uca.aeroport;
 import java.util.Date;
 
 
-public Escale extends Etape {
+public class Escale extends Etape {
     
     private Aeroport aeroport;
 
