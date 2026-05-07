@@ -19,6 +19,8 @@
 
 package org.uca.aeroport;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
@@ -54,6 +56,8 @@ public class CompagnieTest {
         // ============== Tests de réussite ==============
 
         @Test
+        @Order(1)
+        @DisplayName("Reussite 1.1 (creer Vol Ajoute Le Vol A La Compagnie)")
         public void creerVolAjouteLeVolALaCompagnie() {
                 Compagnie compagnie = new Compagnie();
                 compagnie.setName("Air France");
@@ -74,6 +78,8 @@ public class CompagnieTest {
         }
 
         @Test
+        @Order(2)
+        @DisplayName("Reussite 1.2 (creer Vol Definit Les Dates Et Aeroports)")
         public void creerVolDefinitLesDatesEtAeroports() {
                 Compagnie compagnie = new Compagnie();
 
@@ -97,6 +103,8 @@ public class CompagnieTest {
         }
 
         @Test
+        @Order(3)
+        @DisplayName("Reussite 1.3 (obtenir Duree Retourne La Duree Du Vol)")
         public void obtenirDureeRetourneLaDureeDuVol() {
                 Compagnie compagnie = new Compagnie();
 
@@ -111,6 +119,8 @@ public class CompagnieTest {
         }
 
         @Test
+        @Order(4)
+        @DisplayName("Reussite 1.4 (add Vol Retire Le Vol De Son Ancienne Compagnie)")
         public void addVolRetireLeVolDeSonAncienneCompagnie() {
                 Compagnie ancienneCompagnie = new Compagnie();
                 ancienneCompagnie.setName("Air France");
@@ -135,6 +145,8 @@ public class CompagnieTest {
         // ============== Tests d'échec ==============
 
         @Test
+        @Order(5)
+        @DisplayName("Echec 2.1 (obtenir Duree Retourne Null Si Date Depart Ou Arrivee Manquante)")
         public void obtenirDureeRetourneNullSiDateDepartOuArriveeManquante() {
                 Vol vol = new Vol();
 
@@ -142,6 +154,8 @@ public class CompagnieTest {
         }
 
         @Test
+        @Order(6)
+        @DisplayName("Echec 2.2 (set Compagnie Null Retire Le Vol De La Compagnie)")
         public void setCompagnieNullRetireLeVolDeLaCompagnie() {
                 Compagnie compagnie = new Compagnie();
 
@@ -161,6 +175,8 @@ public class CompagnieTest {
         // ============== Tests de validité ==============
 
         @Test
+        @Order(7)
+        @DisplayName("Validite 3.1 (Chaque Vol Cree Par Compagnie Est Rattache A Elle)")
         public void chaqueVolCreeParCompagnieEstRattacheAElle() {
                 Compagnie compagnie = new Compagnie();
 
@@ -175,6 +191,8 @@ public class CompagnieTest {
         }
 
         @Test
+        @Order(8)
+        @DisplayName("Validite 3.2 (Une Compagnie Ne Contient Pas Deux Fois Le Meme Vol)")
         public void uneCompagnieNeContientPasDeuxFoisLeMemeVol() {
                 Compagnie compagnie = new Compagnie();
 

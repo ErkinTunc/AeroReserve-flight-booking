@@ -20,6 +20,8 @@
 
 package org.uca.aeroport;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -62,6 +64,8 @@ public class VolTest {
     // ============== Tests de réussite ==============
 
     @Test
+    @Order(1)
+    @DisplayName("Reussite 1.1 (obtenir Duree Retourne La Duree Entre Depart Et Arrivee)")
     public void obtenirDureeRetourneLaDureeEntreDepartEtArrivee() {
         Vol vol = new Vol();
 
@@ -72,6 +76,8 @@ public class VolTest {
     }
 
     @Test
+    @Order(2)
+    @DisplayName("Reussite 1.2 (setCompagnie Ajoute Le Vol A La Compagnie)")
     public void setCompagnieAjouteLeVolALaCompagnie() {
         Vol vol = creerVolSimple("AF123");
         Compagnie compagnie = new Compagnie();
@@ -84,6 +90,8 @@ public class VolTest {
     }
 
     @Test
+    @Order(3)
+    @DisplayName("Reussite 1.3 (setters Definissent Correctement Les Informations Du Vol)")
     public void settersDefinissentCorrectementLesInformationsDuVol() {
         Vol vol = new Vol();
 
@@ -108,6 +116,8 @@ public class VolTest {
     // ============== Tests d'échec ==============
 
     @Test
+    @Order(4)
+    @DisplayName("Reussite 2.4 (obtenir Duree Retourne Null Si Date Depart Ou Arrivee Manquante)")
     public void obtenirDureeRetourneNullSiDateDepartManquante() {
         Vol vol = new Vol();
 
@@ -117,6 +127,8 @@ public class VolTest {
     }
 
     @Test
+    @Order(5)
+    @DisplayName("Reussite 2.5 (obtenir Duree Retourne Null Si Date Arrivee Manquante)")
     public void obtenirDureeRetourneNullSiDateArriveeManquante() {
         Vol vol = new Vol();
 
@@ -126,6 +138,8 @@ public class VolTest {
     }
 
     @Test
+    @Order(6)
+    @DisplayName("Reussite 2.6 (set Compagnie Null Retire Le Vol De La Compagnie)")
     public void setCompagnieNullRetireLeVolDeSonAncienneCompagnie() {
         Vol vol = creerVolSimple("AF123");
         Compagnie compagnie = new Compagnie();
@@ -140,6 +154,8 @@ public class VolTest {
     // ============== Tests de validité ==============
 
     @Test
+    @Order(7)
+    @DisplayName("Validite 3.1 (Changer Compagnie Retire Le Vol De L'Ancienne Compagnie)")
     public void changerCompagnieRetireLeVolDeLAncienneCompagnie() {
         Vol vol = creerVolSimple("AF123");
 
@@ -158,6 +174,8 @@ public class VolTest {
     }
 
     @Test
+    @Order(8)
+    @DisplayName("Validite 3.2 (Deux Vols Avec Meme Numero Sont Egaux)")
     public void deuxVolsAvecMemeNumeroSontEgaux() {
         Vol vol1 = creerVolSimple("AF123");
         Vol vol2 = creerVolSimple("AF123");
@@ -166,6 +184,8 @@ public class VolTest {
     }
 
     @Test
+    @Order(9)
+    @DisplayName("Validite 3.3 (Deux Vols Avec Numeros Differents Ne Sont Pas Egaux)")
     public void deuxVolsAvecNumerosDifferentsNeSontPasEgaux() {
         Vol vol1 = creerVolSimple("AF123");
         Vol vol2 = creerVolSimple("TK456");
@@ -174,6 +194,8 @@ public class VolTest {
     }
 
     @Test
+    @Order(10)
+    @DisplayName("Validite 3.4 (HashSet Ne Contient Pas Deux Fois Le Meme Numero De Vol)")
     public void hashSetNeContientPasDeuxFoisLeMemeNumeroDeVol() {
         Vol vol1 = creerVolSimple("AF123");
         Vol vol2 = creerVolSimple("AF123");
