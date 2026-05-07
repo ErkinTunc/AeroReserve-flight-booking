@@ -67,13 +67,21 @@ public class Compagnie {
     }
 
     public void addVol(Vol vol) {
-        vol.setCompagnieWithoutBidirectional(this);
-        this.vols.add(vol);
+        if (vol == null) {
+            return;
+        }
+
+        vol.setCompagnie(this);
     }
 
     public void removeVol(Vol vol) {
-        vol.setCompagnieWithoutBidirectional(null);
-        this.vols.remove(vol);
+        if (vol == null) {
+            return;
+        }
+
+        if (this.equals(vol.getCompagnie())) {
+            vol.setCompagnie(null);
+        }
     }
 
     protected void setVolsWithoutBidirectional(Collection<Vol> vols) {

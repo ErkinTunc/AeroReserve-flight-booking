@@ -110,6 +110,28 @@ public class CompagnieTest {
                 assertEquals(Duration.ofHours(3).plusMinutes(15), vol.obtenirDuree());
         }
 
+        @Test
+        public void addVolRetireLeVolDeSonAncienneCompagnie() {
+                Compagnie ancienneCompagnie = new Compagnie();
+                ancienneCompagnie.setName("Air France");
+
+                Compagnie nouvelleCompagnie = new Compagnie();
+                nouvelleCompagnie.setName("Turkish Airlines");
+
+                Vol vol = ancienneCompagnie.creerVol(
+                                "AF123",
+                                dateParis(24, 9, 30),
+                                dateIstanbul(24, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul"));
+
+                nouvelleCompagnie.addVol(vol);
+
+                assertEquals(nouvelleCompagnie, vol.getCompagnie());
+                assertFalse(ancienneCompagnie.getVols().contains(vol));
+                assertTrue(nouvelleCompagnie.getVols().contains(vol));
+        }
+
         // ============== Tests d'échec ==============
 
         @Test

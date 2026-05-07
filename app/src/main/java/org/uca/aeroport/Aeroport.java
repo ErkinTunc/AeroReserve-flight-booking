@@ -6,9 +6,11 @@ public class Aeroport {
 
     private String ville;
 
+    // ------------------- Constructors ------------------
     public Aeroport() {
     }
 
+    // ------------------- Getters and Setters ------------------
     public String getNom() {
         return nom;
     }
