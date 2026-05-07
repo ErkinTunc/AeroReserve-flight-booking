@@ -24,6 +24,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -32,6 +35,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class VolTest {
 
     // ------------------ Méthodes utilitaires pour les tests -----------------
@@ -117,7 +121,7 @@ public class VolTest {
 
     @Test
     @Order(4)
-    @DisplayName("Reussite 2.4 (obtenir Duree Retourne Null Si Date Depart Ou Arrivee Manquante)")
+    @DisplayName("Echec 2.4 (obtenir Duree Retourne Null Si Date Depart Ou Arrivee Manquante)")
     public void obtenirDureeRetourneNullSiDateDepartManquante() {
         Vol vol = new Vol();
 
@@ -128,7 +132,7 @@ public class VolTest {
 
     @Test
     @Order(5)
-    @DisplayName("Reussite 2.5 (obtenir Duree Retourne Null Si Date Arrivee Manquante)")
+    @DisplayName("Echec 2.5 (obtenir Duree Retourne Null Si Date Arrivee Manquante)")
     public void obtenirDureeRetourneNullSiDateArriveeManquante() {
         Vol vol = new Vol();
 
@@ -139,7 +143,7 @@ public class VolTest {
 
     @Test
     @Order(6)
-    @DisplayName("Reussite 2.6 (set Compagnie Null Retire Le Vol De La Compagnie)")
+    @DisplayName("Echec 2.6 (set Compagnie Null Retire Le Vol De La Compagnie)")
     public void setCompagnieNullRetireLeVolDeSonAncienneCompagnie() {
         Vol vol = creerVolSimple("AF123");
         Compagnie compagnie = new Compagnie();

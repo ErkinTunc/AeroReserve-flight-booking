@@ -22,8 +22,7 @@ public class Vol {
 
     // ------------------- Constructors ------------------
 
-    protected Vol() { // protected -> Vol can only be created by Compagnie.creerVol() "generateur de
-                      // vol"
+    protected Vol() { // protected -> limits direct creation of Vol outside the package/subclasses
     }
 
     protected Vol(String numero) {

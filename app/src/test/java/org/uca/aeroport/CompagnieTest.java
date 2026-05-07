@@ -23,6 +23,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -30,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CompagnieTest {
 
         // ------------------ Méthodes utilitaires pour les tests -----------------
