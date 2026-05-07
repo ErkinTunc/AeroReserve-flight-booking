@@ -4,6 +4,8 @@
 
 [Sujet](https://loriscroce.frama.io/enseignement/genie_logiciel_l3/tp4/) , [Guide JUnit](https://docs.junit.org/5.7.2/user-guide/)
 
+## Changes
+
 1. Added Gradlew instruction first version
 
 ##### Compagnie Changes
@@ -28,122 +30,9 @@
 
 ---
 
-2. Implemented the travel package to the project.
-   - Aeroport
-   - Compagnie
-   - Vol
-3. Implemented Date class to the project.
-   - Date
-
-4. will implement reservation package
-
----
-
 ## Architecture
 
 ![First UML implementation , not the final one](/docs/img/uml1.jpeg "UML Class Diagram")
-
-![First UML implementation , not the final one](/docs/img/uml2.jpeg "UML Class Diagram")
-
-**1. STATE PATTERN** :
-
-- _Escale_ extends _Etape_
-- _Vol_ extends _Escale_
-
-  so we can say that _Vol_ is a type of _Escale_ and _Escale_ is a type of _Etape_.
-
-  ```
-  Vol -> currentState : Etat
-  Vol -> setState(Etat) : void
-  Vol -> getState() : Etat
-  ```
-
-**2. STRATEGY PATTERN**
-
-- _Valeur\<T>_ and othergeneric changes
-  if we want to have
-  - different calculation methods
-  - different validation
-  - different treatment
-
-ex:
-
-```java
-interface PolitiqueTarif {
-   double calculer(...)
-}
-```
-
-Concrete strategyies:
-
-- TarifEco
-- TarifBusiness
-- TarifPromo
-
-**3. Observer Pattern**
-
-- _Compagnie_ / _Vol_ relation with "general view":
-  if we want to update _view_ when model is changed.
-
-  ```
-  Model -> notify()
-  View -> update()
-  ```
-
-  donc
-
-  ```
-  Vol is changed
-  -> notify observers
-  -> GeneralView update
-  ```
-
-  **4. Composition Pattern**
-
-**5. GENERALIZATION / INHERITANCE**
-
-```
-Escal -> Etat
-```
-
----
-
-### Should be added
-
-**A) FACTORY METHOD**
-
-```
-
-EtatFactory.createEtat(type)
-```
-
-it is important if
-
-- Escale
-- Annule
-- EnVol
-- Retard
-  states will be created
-
-**B) NULL OBJECT**
-Especially for the situation
-
-- _Vol sans escale_
-
-**C) ITERATOR** (If there is escale list)
-if
-
-```
-Vol -> List<Escale>
-```
-
-then
-
-```
-Iterator<Escale>
-```
-
-is essential
 
 ---
 
