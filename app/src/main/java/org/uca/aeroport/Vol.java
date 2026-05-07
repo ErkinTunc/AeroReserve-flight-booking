@@ -1,9 +1,10 @@
 package org.uca.aeroport;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 
 import java.time.ZonedDateTime;
+
+import java.util.Objects;
 
 public class Vol {
 
@@ -21,7 +22,8 @@ public class Vol {
 
     // ------------------- Constructors ------------------
 
-    public Vol() {
+    protected Vol() { // protected -> Vol can only be created by Compagnie.creerVol() "generateur de
+                      // vol"
     }
 
     protected Vol(String numero) {
@@ -60,13 +62,19 @@ public class Vol {
     }
 
     public void setCompagnie(Compagnie compagnie) {
-        if (compagnie != null) {
-            compagnie.addVolWithoutBidirectional(this);
+        if (this.compagnie == compagnie) {
+            return;
         }
+
         if (this.compagnie != null) {
             this.compagnie.removeVolWithoutBidirectional(this);
         }
+
         this.compagnie = compagnie;
+
+        if (compagnie != null) {
+            compagnie.addVolWithoutBidirectional(this);
+        }
     }
 
     protected void setCompagnieWithoutBidirectional(Compagnie compagnie) {
@@ -101,10 +109,20 @@ public class Vol {
 
     @Override
     public boolean equals(Object obj) {
-        try {
-            return ((Vol) obj).getNumero().equals(this.numero);
-        } catch (Exception e) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof Vol)) {
             return false;
         }
+
+        Vol other = (Vol) obj;
+        return Objects.equals(this.numero, other.numero);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero);
     }
 }

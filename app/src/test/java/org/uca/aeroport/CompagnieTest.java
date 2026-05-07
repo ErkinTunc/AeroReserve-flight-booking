@@ -2,9 +2,9 @@
  * This test class checks the main behavior of the flight management model. 
  * It verifies that a company can create a 
  *      - flight with the correct number 
- *      -dates
- *      -departure airport
- *      -arrival airport
+ *      - dates
+ *      - departure airport
+ *      - arrival airport
  * 
  * It also ensures that the created flight is automatically linked to the company 
  * and added to its flight collection. 

@@ -16,10 +16,15 @@
 
 6. Added **ZonedDateTime** to the Vol in the place of Date to have a better handling of date and time.
 7. Modified methods to make them work with ZonedDateTime instead of Date
+8. Modified equals and hashCode so that two Vol objects are considered equal when they have the same numero.
 
 ##### CompagnieTest Changes
 
-8. Created CompagnieTest class to test Compagnie class
+8. Created CompagnieTest class to test _Compagnie_ class
+
+##### VolTest Changes
+
+9. Added test class for _Vol_ class
 
 ---
 
