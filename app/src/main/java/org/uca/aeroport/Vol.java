@@ -2,7 +2,8 @@ package org.uca.aeroport;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
+
+import java.time.ZonedDateTime;
 
 public class Vol {
 
@@ -14,38 +15,44 @@ public class Vol {
 
     private Compagnie compagnie;
 
-    private Date dateDepart;
+    private ZonedDateTime dateDepart;
 
-    private Date dateArrivee;
+    private ZonedDateTime dateArrivee;
 
-    public Duration obtenirDuree() {
-        if (this.dateDepart != null && this.dateArrivee != null) {
-            return Duration.of(dateArrivee.getTime() - dateDepart.getTime(), ChronoUnit.MILLIS);
-        }
-        return null;
-    }
-
-    public Date getDateDepart() {
-        return dateDepart;
-    }
-
-    public void setDateDepart(Date dateDepart) {
-        this.dateDepart = dateDepart;
-    }
-
-    public Date getDateArrivee() {
-        return dateArrivee;
-    }
-
-    public void setDateArrivee(Date dateArrivee) {
-        this.dateArrivee = dateArrivee;
-    }
+    // ------------------- Constructors ------------------
 
     public Vol() {
     }
 
     protected Vol(String numero) {
         this.numero = numero;
+    }
+
+    // ------------------- Methods ------------------
+
+    public Duration obtenirDuree() {
+        if (this.dateDepart != null && this.dateArrivee != null) {
+            return Duration.between(this.dateDepart, this.dateArrivee);
+        }
+        return null;
+    }
+
+    // ------------------- Getters and Setters ------------------
+
+    public ZonedDateTime getDateDepart() {
+        return dateDepart;
+    }
+
+    public void setDateDepart(ZonedDateTime dateDepart) {
+        this.dateDepart = dateDepart;
+    }
+
+    public ZonedDateTime getDateArrivee() {
+        return dateArrivee;
+    }
+
+    public void setDateArrivee(ZonedDateTime dateArrivee) {
+        this.dateArrivee = dateArrivee;
     }
 
     public Compagnie getCompagnie() {
@@ -89,6 +96,8 @@ public class Vol {
     public void setArrivee(Aeroport arrivee) {
         this.arrivee = arrivee;
     }
+
+    // ------------------- Equals and HashCode ------------------
 
     @Override
     public boolean equals(Object obj) {

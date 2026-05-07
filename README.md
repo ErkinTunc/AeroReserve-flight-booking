@@ -4,7 +4,25 @@
 
 [Sujet](https://loriscroce.frama.io/enseignement/genie_logiciel_l3/tp4/) , [Guide JUnit](https://docs.junit.org/5.7.2/user-guide/)
 
-1. Added Gradlew instruction first version 
+1. Added Gradlew instruction first version
+
+##### Compagnie Changes
+
+2. Added **hashset** to the Compagnie class to avoid adding the same vol multiple times.
+3. Added **ZoneDateTime** to the Date class to have a better handling of date and time.
+4. Added **createVol** method to the Compagnie class to create a new vol and add it to the compagnie.
+
+##### Vol Changes
+
+6. Added **ZonedDateTime** to the Vol in the place of Date to have a better handling of date and time.
+7. Modified methods to make them work with ZonedDateTime instead of Date
+
+##### CompagnieTest Changes
+
+8. Created CompagnieTest class to test Compagnie class
+
+---
+
 2. Implemented the travel package to the project.
    - Aeroport
    - Compagnie
@@ -50,6 +68,7 @@ interface PolitiqueTarif {
    double calculer(...)
 }
 ```
+
 Concrete strategyies:
 
 - TarifEco

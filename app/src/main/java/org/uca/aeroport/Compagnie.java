@@ -2,15 +2,43 @@ package org.uca.aeroport;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import java.time.ZonedDateTime;
 
 public class Compagnie {
 
     private String name;
 
-    private Collection<Vol> vols = new ArrayList<>();
+    private Set<Vol> vols = new HashSet<>(); // Hashset evite d'ajouter plusieurs fois le meme vol
+
+    // ------------------- Constructors ------------------
 
     public Compagnie() {
     }
+
+    // ------------------- Methods ------------------
+
+    public Vol creerVol(String numero,
+            ZonedDateTime dateDepart,
+            ZonedDateTime dateArrivee,
+            Aeroport aeroportDepart,
+            Aeroport aeroportArrivee) {
+
+        Vol vol = new Vol(numero);
+
+        vol.setDateDepart(dateDepart);
+        vol.setDateArrivee(dateArrivee);
+        vol.setDepart(aeroportDepart);
+        vol.setArrivee(aeroportArrivee);
+
+        this.addVol(vol);
+
+        return vol;
+    }
+
+    // ------------------- Getters and Setters ------------------
 
     public String getName() {
         return name;
@@ -29,10 +57,11 @@ public class Compagnie {
             v.setCompagnieWithoutBidirectional(null);
         }
 
-        this.vols = vols;
+        this.vols = new HashSet<>();
 
-        if (this.vols != null) {
-            for (Vol v : this.vols) {
+        if (vols != null) {
+            for (Vol v : vols) {
+                this.vols.add(v);
                 v.setCompagnieWithoutBidirectional(this);
             }
         }
@@ -49,7 +78,11 @@ public class Compagnie {
     }
 
     protected void setVolsWithoutBidirectional(Collection<Vol> vols) {
-        this.vols = vols;
+        this.vols = new HashSet<>();
+
+        if (vols != null) {
+            this.vols.addAll(vols);
+        }
     }
 
     protected void addVolWithoutBidirectional(Vol vol) {
