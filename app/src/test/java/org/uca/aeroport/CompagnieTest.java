@@ -20,11 +20,7 @@
 package org.uca.aeroport;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -33,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CompagnieTest {
 
         // ------------------ Méthodes utilitaires pour les tests -----------------
@@ -57,33 +52,33 @@ public class CompagnieTest {
                                 ZoneId.of("Europe/Istanbul"));
         }
 
+        private Vol creerVolParisIstanbul(Compagnie compagnie, String numero) {
+                return compagnie.creerVol(
+                                numero,
+                                dateParis(24, 9, 30),
+                                dateIstanbul(24, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul"));
+        }
+
         // ============== Tests de réussite ==============
 
         @Test
-        @Order(1)
-        @DisplayName("Reussite 1.1 (creer Vol Ajoute Le Vol A La Compagnie)")
+        @DisplayName("Reussite 1.1 : Une compagnie peut creer un vol rattache a elle")
         public void creerVolAjouteLeVolALaCompagnie() {
                 Compagnie compagnie = new Compagnie();
                 compagnie.setName("Air France");
 
-                Aeroport depart = creerAeroport("Charles de Gaulle", "Paris");
-                Aeroport arrivee = creerAeroport("Istanbul Airport", "Istanbul");
+                Vol vol = creerVolParisIstanbul(compagnie, "AF123");
 
-                Vol vol = compagnie.creerVol(
-                                "AF123",
-                                dateParis(24, 9, 30),
-                                dateIstanbul(24, 13, 45),
-                                depart,
-                                arrivee);
-
-                assertEquals("AF123", vol.getNumero());
-                assertEquals(compagnie, vol.getCompagnie());
-                assertTrue(compagnie.getVols().contains(vol));
+                assertAll(
+                                () -> assertEquals("AF123", vol.getNumero()),
+                                () -> assertSame(compagnie, vol.getCompagnie()),
+                                () -> assertTrue(compagnie.getVols().contains(vol)));
         }
 
         @Test
-        @Order(2)
-        @DisplayName("Reussite 1.2 (creer Vol Definit Les Dates Et Aeroports)")
+        @DisplayName("Reussite 1.2 : creerVol initialise les dates et les aeroports du vol")
         public void creerVolDefinitLesDatesEtAeroports() {
                 Compagnie compagnie = new Compagnie();
 
@@ -107,8 +102,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @Order(3)
-        @DisplayName("Reussite 1.3 (obtenir Duree Retourne La Duree Du Vol)")
+        @DisplayName("Reussite 1.3 : obtenirDuree retourne la duree correcte du vol")
         public void obtenirDureeRetourneLaDureeDuVol() {
                 Compagnie compagnie = new Compagnie();
 
@@ -123,8 +117,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @Order(4)
-        @DisplayName("Reussite 1.4 (add Vol Retire Le Vol De Son Ancienne Compagnie)")
+        @DisplayName("Reussite 1.4 : addVol transfere un vol depuis son ancienne compagnie")
         public void addVolRetireLeVolDeSonAncienneCompagnie() {
                 Compagnie ancienneCompagnie = new Compagnie();
                 ancienneCompagnie.setName("Air France");
@@ -149,17 +142,15 @@ public class CompagnieTest {
         // ============== Tests d'échec ==============
 
         @Test
-        @Order(5)
-        @DisplayName("Echec 2.1 (obtenir Duree Retourne Null Si Date Depart Ou Arrivee Manquante)")
+        @DisplayName("Echec 2.1 : obtenirDuree retourne null si les dates sont manquantes")
         public void obtenirDureeRetourneNullSiDateDepartOuArriveeManquante() {
-                Vol vol = new Vol();
+                Vol vol = new Vol("AF123");
 
                 assertNull(vol.obtenirDuree());
         }
 
         @Test
-        @Order(6)
-        @DisplayName("Echec 2.2 (set Compagnie Null Retire Le Vol De La Compagnie)")
+        @DisplayName("Echec 2.2 : setCompagnie null retire le vol de la compagnie")
         public void setCompagnieNullRetireLeVolDeLaCompagnie() {
                 Compagnie compagnie = new Compagnie();
 
@@ -176,11 +167,23 @@ public class CompagnieTest {
                 assertFalse(compagnie.getVols().contains(vol));
         }
 
+        @Test
+        @DisplayName("Echec 2.3 : creerVol refuse une information null")
+        public void creerVolLanceExceptionSiInformationNull() {
+                Compagnie compagnie = new Compagnie();
+
+                assertThrows(IllegalArgumentException.class, () -> compagnie.creerVol(
+                                null,
+                                dateParis(24, 9, 30),
+                                dateIstanbul(24, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul")));
+        }
+
         // ============== Tests de validité ==============
 
         @Test
-        @Order(7)
-        @DisplayName("Validite 3.1 (Chaque Vol Cree Par Compagnie Est Rattache A Elle)")
+        @DisplayName("Validite 3.1 : chaque vol cree par une compagnie est rattache a elle")
         public void chaqueVolCreeParCompagnieEstRattacheAElle() {
                 Compagnie compagnie = new Compagnie();
 
@@ -195,8 +198,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @Order(8)
-        @DisplayName("Validite 3.2 (Une Compagnie Ne Contient Pas Deux Fois Le Meme Vol)")
+        @DisplayName("Validite 3.2 : une compagnie ne contient pas deux fois le meme vol")
         public void uneCompagnieNeContientPasDeuxFoisLeMemeVol() {
                 Compagnie compagnie = new Compagnie();
 
@@ -211,5 +213,85 @@ public class CompagnieTest {
                 compagnie.addVol(vol);
 
                 assertEquals(1, compagnie.getVols().size());
+        }
+
+        @Test
+        @DisplayName("Validite 3.3 : une compagnie refuse deux vols avec le meme numero")
+        public void compagnieRefuseDeuxVolsAvecLeMemeNumero() {
+                Compagnie compagnie = new Compagnie();
+
+                compagnie.creerVol(
+                                "AF123",
+                                dateParis(24, 9, 30),
+                                dateIstanbul(24, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul"));
+
+                assertThrows(IllegalArgumentException.class, () -> compagnie.creerVol(
+                                "AF123",
+                                dateParis(25, 9, 30),
+                                dateIstanbul(25, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul")));
+        }
+
+        @Test
+        @DisplayName("Validite 3.4 : addVol refuse un numero deja present dans la compagnie")
+        public void addVolRefuseUnNumeroDejaPresentDansLaCompagnie() {
+                Compagnie compagnie = new Compagnie();
+
+                compagnie.creerVol(
+                                "AF123",
+                                dateParis(24, 9, 30),
+                                dateIstanbul(24, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul"));
+
+                Vol autreVol = new Vol("AF123");
+
+                assertThrows(IllegalArgumentException.class, () -> compagnie.addVol(autreVol));
+        }
+
+        @Test
+        @DisplayName("Validite 3.5 : une compagnie peut generer automatiquement des numeros de vol uniques")
+        public void compagnieGenereAutomatiquementDesNumerosUniques() {
+                Compagnie compagnie = new Compagnie();
+
+                Vol vol1 = compagnie.creerVol(
+                                dateParis(24, 9, 30),
+                                dateIstanbul(24, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul"));
+
+                Vol vol2 = compagnie.creerVol(
+                                dateParis(25, 9, 30),
+                                dateIstanbul(25, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul"));
+
+                assertNotEquals(vol1.getNumero(), vol2.getNumero());
+                assertEquals("VOL-1", vol1.getNumero());
+                assertEquals("VOL-2", vol2.getNumero());
+        }
+
+        @Test
+        @DisplayName("Validite 3.6 : le generateur saute un numero deja utilise manuellement")
+        public void generateurSauteUnNumeroDejaUtiliseManuellement() {
+                Compagnie compagnie = new Compagnie();
+
+                compagnie.creerVol(
+                                "VOL-1",
+                                dateParis(24, 9, 30),
+                                dateIstanbul(24, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul"));
+
+                Vol volAutomatique = compagnie.creerVol(
+                                dateParis(25, 9, 30),
+                                dateIstanbul(25, 13, 45),
+                                creerAeroport("Charles de Gaulle", "Paris"),
+                                creerAeroport("Istanbul Airport", "Istanbul"));
+
+                assertEquals("VOL-2", volAutomatique.getNumero());
         }
 }

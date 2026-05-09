@@ -5,10 +5,12 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class Vol {
 
-    private String numero;
+    private final UUID id;
+    private final String numero;
 
     private Aeroport depart;
 
@@ -22,13 +24,14 @@ public class Vol {
 
     // ------------------- Constructors ------------------
 
-    protected Vol() { // protected -> limits direct creation of Vol outside the package/subclasses
-    }
+    protected Vol(String numero) { // protected -> limits direct creation of Vol outside the package/subclasses
+        if (numero == null || numero.isBlank()) {
+            throw new IllegalArgumentException("Le numero du vol est obligatoire");
+        }
 
-    protected Vol(String numero) {
+        this.id = UUID.randomUUID(); // identifiant technique unique
         this.numero = numero;
     }
-
     // ------------------- Methods ------------------
 
     public Duration obtenirDuree() {
@@ -38,7 +41,25 @@ public class Vol {
         return null;
     }
 
+    private void verifierDatesCoherentes() {
+        if (dateDepart != null && dateArrivee != null && dateArrivee.isBefore(dateDepart)) {
+            throw new IllegalArgumentException("La date d'arrivee doit etre apres la date de depart");
+        }
+    }
+
     // ------------------- Getters and Setters ------------------
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public Aeroport getDepart() {
+        return depart;
+    }
 
     public ZonedDateTime getDateDepart() {
         return dateDepart;
@@ -46,6 +67,7 @@ public class Vol {
 
     public void setDateDepart(ZonedDateTime dateDepart) {
         this.dateDepart = dateDepart;
+        verifierDatesCoherentes();
     }
 
     public ZonedDateTime getDateArrivee() {
@@ -54,6 +76,7 @@ public class Vol {
 
     public void setDateArrivee(ZonedDateTime dateArrivee) {
         this.dateArrivee = dateArrivee;
+        verifierDatesCoherentes();
     }
 
     public Compagnie getCompagnie() {
@@ -80,18 +103,6 @@ public class Vol {
         this.compagnie = compagnie;
     }
 
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public Aeroport getDepart() {
-        return depart;
-    }
-
     public void setDepart(Aeroport depart) {
         this.depart = depart;
     }
@@ -108,20 +119,16 @@ public class Vol {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-
-        if (!(obj instanceof Vol)) {
+        if (!(obj instanceof Vol))
             return false;
-        }
-
         Vol other = (Vol) obj;
-        return Objects.equals(this.numero, other.numero);
+        return Objects.equals(this.id, other.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(numero);
+        return Objects.hash(id);
     }
 }

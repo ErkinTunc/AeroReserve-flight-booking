@@ -6,7 +6,6 @@ import org.uca.aeroport.Vol;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-//import java.util.Date;
 
 public class Start {
 
@@ -105,5 +104,22 @@ public class Start {
                 System.out.println(volCree.getDepart().getNom());
                 System.out.println(volCree.getArrivee().getNom());
                 System.out.println(volCree.obtenirDuree().toString().substring(2));
+
+                // -----------------
+                Vol volCree2 = compagnie.creerVol(
+                                "AF1234",
+                                dateDepartCreation,
+                                dateArriveeCreation,
+                                aeroportDepart,
+                                aeroportArrivee);
+
+                Vol volCreeAutomatique = compagnie.creerVol(
+                                dateDepartCreation,
+                                dateArriveeCreation,
+                                aeroportDepart,
+                                aeroportArrivee);
+
+                System.out.println(volCree2.getNumero());
+                System.out.println(volCreeAutomatique.getNumero());
         }
 }
