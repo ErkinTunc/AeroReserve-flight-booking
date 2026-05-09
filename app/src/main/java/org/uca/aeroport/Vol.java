@@ -88,6 +88,10 @@ public class Vol {
             return;
         }
 
+        if (compagnie != null && compagnie.contientNumeroDeVol(this)) {
+            throw new IllegalArgumentException("Un vol avec ce numero existe deja dans cette compagnie");
+        }
+
         if (this.compagnie != null) {
             this.compagnie.removeVolWithoutBidirectional(this);
         }

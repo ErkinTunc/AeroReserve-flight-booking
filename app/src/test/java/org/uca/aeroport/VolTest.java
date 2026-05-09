@@ -193,4 +193,21 @@ public class VolTest {
 
         assertEquals(2, vols.size());
     }
+
+    @Test
+    @DisplayName("Validite 3.5 : setCompagnie refuse un numero deja present dans la compagnie")
+    public void setCompagnieRefuseUnNumeroDejaPresentDansLaCompagnie() {
+        Compagnie compagnie = new Compagnie();
+
+        compagnie.creerVol(
+                "AF123",
+                dateParis(24, 9, 30),
+                dateIstanbul(24, 13, 45),
+                creerAeroport("Charles de Gaulle", "Paris"),
+                creerAeroport("Istanbul Airport", "Istanbul"));
+
+        Vol autreVol = new Vol("AF123");
+
+        assertThrows(IllegalArgumentException.class, () -> autreVol.setCompagnie(compagnie));
+    }
 }

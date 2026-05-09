@@ -24,10 +24,11 @@ public class Compagnie {
 
     /**
      * Creer un vol avec un numero specifie
-     * @param numero : le numero du vol (ex: "AF123")
+     * 
+     * @param numero          : le numero du vol (ex: "AF123")
      * @param dateDepart
      * @param dateArrivee
-     * @param aeroportDepart 
+     * @param aeroportDepart
      * @param aeroportArrivee
      * @return le vol cree
      */
@@ -61,6 +62,7 @@ public class Compagnie {
 
     /**
      * Creer un vol avec un numero genere automatiquement
+     * 
      * @param dateDepart
      * @param dateArrivee
      * @param aeroportDepart
@@ -96,6 +98,15 @@ public class Compagnie {
     private boolean contientNumero(String numero) {
         return this.vols.stream()
                 .anyMatch(v -> v.getNumero().equals(numero));
+    }
+
+    protected boolean contientNumeroDeVol(Vol vol) {
+        if (vol == null) {
+            return false;
+        }
+
+        return this.vols.stream()
+                .anyMatch(v -> v != vol && v.getNumero().equals(vol.getNumero()));
     }
 
     // ------------------- Getters and Setters ------------------

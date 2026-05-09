@@ -13,18 +13,18 @@
 2. Added **hashset** to the Compagnie class to avoid adding the same vol multiple times.
 3. Added **ZoneDateTime** to the Date class to have a better handling of date and time.
 4. Added **createVol** method to the Compagnie class to create a new vol and add it to the compagnie.
-10. Added an internal flight number generator in Compagnie to produce unique numbers automatically.
+5. Added an internal flight number generator in Compagnie to produce unique numbers automatically.
 
 ##### Vol Changes
 
 6. Added **ZonedDateTime** to the Vol in the place of Date to have a better handling of date and time.
 7. Modified methods to make them work with ZonedDateTime instead of Date
-8. Modified equals and hashCode so that two Vol objects are considered equal when they have the same numero.
+8. Modified equals and hashCode so that two Vol objects are considered equal only when they have the same technical UUID id.
+   Flight number uniqueness is enforced by Compagnie, not by Vol.equals().
 9. Added _unicity_ for the flights Companies can't have have the same flight number,
    - Added **UUID** -> internal unique technical id
    - Added **String numero** -> business flight number, ex: "AF123"
    - Modified equals and hashcode
-
 
 ##### CompagnieTest Changes
 
