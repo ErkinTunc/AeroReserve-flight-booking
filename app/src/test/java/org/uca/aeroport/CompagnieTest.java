@@ -18,6 +18,7 @@
  */
 
 package org.uca.aeroport;
+import org.uca.aeroport.Ville;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,9 +34,10 @@ public class CompagnieTest {
 
         // ------------------ Méthodes utilitaires pour les tests -----------------
 
-        private Aeroport creerAeroport(String nom, String ville) {
+        private Aeroport creerAeroport(String nom, String nomVille) {
                 Aeroport aeroport = new Aeroport();
                 aeroport.setNom(nom);
+                Ville ville = new Ville(nomVille);
                 aeroport.setVille(ville);
                 return aeroport;
         }

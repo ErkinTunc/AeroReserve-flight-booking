@@ -1,14 +1,12 @@
 package org.uca.reservation;
 
-import java.math.BigDecimal;
-
 /**
- * Tarif économique : prix inchangé.
+ * Economy pricing: keep base price unchanged.
  */
 public class TarifEco implements PolitiqueTarif {
 
     @Override
-    public Money calculer(Money prixDeBase) {
-        return prixDeBase;
+    public double calculer(double basePrice) {
+        return basePrice;
     }
 }

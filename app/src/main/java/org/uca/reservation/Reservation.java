@@ -33,14 +33,14 @@ public class Reservation {
 
     private final String          numero;   // identifiant unique
     private final ZonedDateTime   date;     // readonly après construction
-    private final Money           prix;     // readonly après construction
+    private final double           prix;     // readonly après construction
     private       EtatReservation etat;
     private final Client          client;
     private final Passager        passager;
 
     // Constructeur package-private : passer par ReservationFactory. 
 
-    Reservation(String numero, Money prix, Client client, Passager passager) {
+    Reservation(String numero, double prix, Client client, Passager passager) {
         this.numero   = numero;
         this.date     = ZonedDateTime.now();
         this.prix     = prix;
@@ -79,7 +79,7 @@ public class Reservation {
 
     public String getNumero()            { return numero;  }
     public ZonedDateTime getDate()       { return date;    }
-    public Money getPrix()               { return prix;    }
+    public double getPrix()               { return prix;    }
     public Client getClient()            { return client;  }
     public Passager getPassager()        { return passager; }
     public EtatReservation getEtat()     { return etat;    }

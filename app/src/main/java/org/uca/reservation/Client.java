@@ -4,26 +4,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
-
-public class Client{
+public class Client {
 
     private String nom;
-
-    private String mail; 
-
+    private String mail;
     private String moyenPaiement;
-
     private int fidelitePoints;
 
-
-    //Réservation effecuées par ce Client
-
+    // Réservations effectuées par ce Client (optionnel)
     private final List<Reservation> reservations = new ArrayList<>();
 
-    public String nom(){ return nom; }
+    public String getNom() {
+        return nom;
+    }
 
-    public void setNom(String nom){ this.nom = nom ;}
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
     public String getMail() {
         return mail;
@@ -49,46 +46,24 @@ public class Client{
         this.fidelitePoints = fidelitePoints;
     }
 
-
-
-    /*
-      Retourne une vue non modifiable des réservations du client.
-     */
+    // Vue non modifiable des réservations
     public List<Reservation> getReservations() {
         return Collections.unmodifiableList(reservations);
     }
 
-    /*
-      Ajoute une réservation à la liste du client
-        en maintenant la double navigabilité.
-     */
+    // Ajoute une réservation SANS appeler setClientInternal
     public void addReservation(Reservation reservation) {
         if (reservation == null || reservations.contains(reservation)) {
             return;
         }
         reservations.add(reservation);
-        reservation.setClientInternal(this);
     }
 
-    /*
-        Méthode interne appelée par Reservation.setClient
-       pour éviter les boucles infinies.
-     */
-    void addReservationInternal(Reservation reservation) {
-        if (!reservations.contains(reservation)) {
-            reservations.add(reservation);
-        }
-    }
-
-    /*
-      Retire une réservation de la liste.
-     */
+    // Retire une réservation
     public void removeReservation(Reservation reservation) {
-        if (reservations.remove(reservation)) {
-            reservation.setClientInternal(null);
+        if (reservation == null) {
+            return;
         }
+        reservations.remove(reservation);
     }
-
-
-
 }

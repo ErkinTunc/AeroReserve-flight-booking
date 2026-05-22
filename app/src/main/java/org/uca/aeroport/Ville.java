@@ -5,6 +5,8 @@ public class Ville{
 
     private String nom;
 
+    public Ville() { } 
+    
     public Ville(String nom){
         this.nom = nom;
     }

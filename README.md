@@ -32,10 +32,60 @@
    - Added **UUID** -> internal unique technical id
    - Added **String numero** -> business flight number, ex: "AF123"
    - Modified equals and hashcode
+Reservation and client changes
+
+- Refactored the `Reservation` model to have:
+  - an immutable reservation number, creation date, price, client and passenger;
+  - a pluggable `EtatReservation` implementing the State pattern.
+- Implemented a full reservation state machine:
+  - `EnAttente` (initial state):
+    - `payer()` → transitions to `Payee`;
+    - `annuler()` → transitions to `Annulee`;
+    - `confirmer()` throws `TransitionInterditeException`.
+  - `Payee`:
+    - `confirmer()` → transitions to `Confirmee`;
+    - `payer()` and `annuler()` throw `TransitionInterditeException`.
+  - `Confirmee` and `Annulee`:
+    - all further transitions are forbidden (always throw `TransitionInterditeException`).
+- Simplified the `Client` class:
+  - stores basic data (name, email, payment method, loyalty points);
+  - maintains a private list of reservations;
+  - exposes an unmodifiable view through `getReservations()`;
+  - provides `addReservation` / `removeReservation` methods that ignore nulls and duplicates.
+
+Pricing and ReservationFactory changes
+
+- Introduced a pricing strategy interface `PolitiqueTarif`:
+
+  ```java
+  double calculer(double basePrice);
+  ```
+
+- Implemented three pricing strategies:
+  - `TarifEco`: base price unchanged;
+  - `TarifBusiness`: +50% on top of the base price;
+  - `TarifPromo`: 20% discount on the base price.
+- Updated `ReservationFactory` to:
+  - create reservations from a base price, client and passenger;
+  - use `TarifEco` as default strategy when no explicit policy is provided;
+  - offer an overloaded `creer(double basePrice, PolitiqueTarif politique, Client client, Passager passager)` method that applies the given pricing policy.
+
+Aeroport, Ville and steps changes
+
+- Updated `Aeroport` to use a `Ville` object instead of a raw `String` for the city:
+  - added validation on code, name and city;
+  - improved `toString()` to include code, name and city.
+- Implemented `Ville` as a dedicated class for city names.
+- Added an abstract `Etape` class to represent temporal steps:
+  - stores departure and arrival `Date`;
+  - computes a derived `Duration getDuree()` as `arrivee - depart` (or `Duration.ZERO` when dates are missing).
+- Implemented `Escale` as a concrete `Etape` with an associated `Aeroport`.
+- Implemented `NullEscale` as a Null Object singleton (`NullEscale.getInstance()`) used to represent “no stopover” instead of using `null`.
 
 #### Tests 
 
 - [Tests](/docs/tests-FlightManagement.md)
+
 
 ---
 

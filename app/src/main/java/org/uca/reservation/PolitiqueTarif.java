@@ -1,24 +1,19 @@
 package org.uca.reservation;
 
-import java.math.BigDecimal;
-
-/*
-        Strategy Pattern pour le calcul du tarif.
-        
-        Chaque implémentation applique un algorithme différent
-        au prix de base (éco, business, promo, etc)
+/**
+ * Pricing strategy for reservations (Strategy pattern).
+ *
+ * Each implementation applies a different pricing rule
+ * on top of the base price (eco, business, promo, etc.).
  */
 public interface PolitiqueTarif {
 
-    /**
-     * Calcule un nouveau prix à partir d'un prix de base.
+    /*
+     * Computes the final price from a base price.
+     *
+      @param basePrice base price of the reservation
+      @return final price after applying this policy
      */
-    Money calculer(Money prixDeBase);
-
-    /**
-     * Utilitaire pour créer un Money en conservant la devise du prix de base.
-     */
-    default Money newMoneyLike(Money base, BigDecimal montant) {
-        return new Money(montant, base.getCurrency());
-    }
+    
+    double calculer(double basePrice);
 }
