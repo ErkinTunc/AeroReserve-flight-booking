@@ -1,16 +1,115 @@
 package org.uca.aeroport;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import java.time.ZonedDateTime;
 
 public class Compagnie {
 
     private String name;
 
-    private Collection<Vol> vols = new ArrayList<>();
+    private Set<Vol> vols = new HashSet<>(); // Hashset evite d'ajouter plusieurs fois le meme vol
+
+    private int prochainNumero = 1;
+
+    // ------------------- Constructors ------------------
 
     public Compagnie() {
     }
+
+    // ------------------- Methods ------------------
+
+    /**
+     * Creer un vol avec un numero specifie
+     * 
+     * @param numero          : le numero du vol (ex: "AF123")
+     * @param dateDepart
+     * @param dateArrivee
+     * @param aeroportDepart
+     * @param aeroportArrivee
+     * @return le vol cree
+     */
+    public Vol creerVol(String numero,
+            ZonedDateTime dateDepart,
+            ZonedDateTime dateArrivee,
+            Aeroport aeroportDepart,
+            Aeroport aeroportArrivee) {
+
+        // Validation des paramètres
+        if (numero == null || dateDepart == null || dateArrivee == null
+                || aeroportDepart == null || aeroportArrivee == null) {
+            throw new IllegalArgumentException("Les informations du vol ne peuvent pas etre nulles");
+        }
+
+        if (contientNumero(numero)) {
+            throw new IllegalArgumentException("Un vol avec ce numero existe deja dans cette compagnie");
+        }
+
+        Vol vol = new Vol(numero);
+
+        vol.setDateDepart(dateDepart);
+        vol.setDateArrivee(dateArrivee);
+        vol.setDepart(aeroportDepart);
+        vol.setArrivee(aeroportArrivee);
+
+        this.addVol(vol);
+
+        return vol;
+    }
+
+    /**
+     * Creer un vol avec un numero genere automatiquement
+     * 
+     * @param dateDepart
+     * @param dateArrivee
+     * @param aeroportDepart
+     * @param aeroportArrivee
+     * @return le vol cree
+     */
+    public Vol creerVol(
+            ZonedDateTime dateDepart,
+            ZonedDateTime dateArrivee,
+            Aeroport aeroportDepart,
+            Aeroport aeroportArrivee) {
+
+        String numero = genererNumero();
+
+        return creerVol(
+                numero,
+                dateDepart,
+                dateArrivee,
+                aeroportDepart,
+                aeroportArrivee);
+    }
+
+    private String genererNumero() {
+        String numero;
+
+        do {
+            numero = "VOL-" + prochainNumero++;
+        } while (contientNumero(numero));
+
+        return numero;
+    }
+
+    private boolean contientNumero(String numero) {
+        return this.vols.stream()
+                .anyMatch(v -> v.getNumero().equals(numero));
+    }
+
+    protected boolean contientNumeroDeVol(Vol vol) {
+        if (vol == null) {
+            return false;
+        }
+
+        return this.vols.stream()
+                .anyMatch(v -> v != vol && v.getNumero().equals(vol.getNumero()));
+    }
+
+    // ------------------- Getters and Setters ------------------
 
     public String getName() {
         return name;
@@ -21,35 +120,52 @@ public class Compagnie {
     }
 
     public Collection<Vol> getVols() {
-        return vols;
+        return Collections.unmodifiableSet(vols);
     }
 
-    public void setVols(Collection<Vol> vols) {
+    protected void setVols(Collection<Vol> vols) {
         for (Vol v : this.vols) {
             v.setCompagnieWithoutBidirectional(null);
         }
 
-        this.vols = vols;
+        this.vols = new HashSet<>();
 
-        if (this.vols != null) {
-            for (Vol v : this.vols) {
+        if (vols != null) {
+            for (Vol v : vols) {
+                this.vols.add(v);
                 v.setCompagnieWithoutBidirectional(this);
             }
         }
     }
 
     public void addVol(Vol vol) {
-        vol.setCompagnieWithoutBidirectional(this);
-        this.vols.add(vol);
+        if (vol == null) {
+            return;
+        }
+
+        if (vol.getCompagnie() != this && contientNumero(vol.getNumero())) {
+            throw new IllegalArgumentException("Un vol avec ce numero existe deja dans cette compagnie");
+        }
+
+        vol.setCompagnie(this);
     }
 
     public void removeVol(Vol vol) {
-        vol.setCompagnieWithoutBidirectional(null);
-        this.vols.remove(vol);
+        if (vol == null) {
+            return;
+        }
+
+        if (this.equals(vol.getCompagnie())) {
+            vol.setCompagnie(null);
+        }
     }
 
     protected void setVolsWithoutBidirectional(Collection<Vol> vols) {
-        this.vols = vols;
+        this.vols = new HashSet<>();
+
+        if (vols != null) {
+            this.vols.addAll(vols);
+        }
     }
 
     protected void addVolWithoutBidirectional(Vol vol) {

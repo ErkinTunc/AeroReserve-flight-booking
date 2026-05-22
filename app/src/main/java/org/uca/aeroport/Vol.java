@@ -1,12 +1,16 @@
 package org.uca.aeroport;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
+
+import java.time.ZonedDateTime;
+
+import java.util.Objects;
+import java.util.UUID;
 
 public class Vol {
 
-    private String numero;
+    private final UUID id;
+    private final String numero;
 
     private Aeroport depart;
 
@@ -14,38 +18,65 @@ public class Vol {
 
     private Compagnie compagnie;
 
-    private Date dateDepart;
+    private ZonedDateTime dateDepart;
 
-    private Date dateArrivee;
+    private ZonedDateTime dateArrivee;
+
+    // ------------------- Constructors ------------------
+
+    protected Vol(String numero) { // protected -> limits direct creation of Vol outside the package/subclasses
+        if (numero == null || numero.isBlank()) {
+            throw new IllegalArgumentException("Le numero du vol est obligatoire");
+        }
+
+        this.id = UUID.randomUUID(); // identifiant technique unique
+        this.numero = numero;
+    }
+    // ------------------- Methods ------------------
 
     public Duration obtenirDuree() {
         if (this.dateDepart != null && this.dateArrivee != null) {
-            return Duration.of(dateArrivee.getTime() - dateDepart.getTime(), ChronoUnit.MILLIS);
+            return Duration.between(this.dateDepart, this.dateArrivee);
         }
         return null;
     }
 
-    public Date getDateDepart() {
+    private void verifierDatesCoherentes() {
+        if (dateDepart != null && dateArrivee != null && dateArrivee.isBefore(dateDepart)) {
+            throw new IllegalArgumentException("La date d'arrivee doit etre apres la date de depart");
+        }
+    }
+
+    // ------------------- Getters and Setters ------------------
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public Aeroport getDepart() {
+        return depart;
+    }
+
+    public ZonedDateTime getDateDepart() {
         return dateDepart;
     }
 
-    public void setDateDepart(Date dateDepart) {
+    public void setDateDepart(ZonedDateTime dateDepart) {
         this.dateDepart = dateDepart;
+        verifierDatesCoherentes();
     }
 
-    public Date getDateArrivee() {
+    public ZonedDateTime getDateArrivee() {
         return dateArrivee;
     }
 
-    public void setDateArrivee(Date dateArrivee) {
+    public void setDateArrivee(ZonedDateTime dateArrivee) {
         this.dateArrivee = dateArrivee;
-    }
-
-    public Vol() {
-    }
-
-    protected Vol(String numero) {
-        this.numero = numero;
+        verifierDatesCoherentes();
     }
 
     public Compagnie getCompagnie() {
@@ -53,29 +84,27 @@ public class Vol {
     }
 
     public void setCompagnie(Compagnie compagnie) {
-        if (compagnie != null) {
-            compagnie.addVolWithoutBidirectional(this);
+        if (this.compagnie == compagnie) {
+            return;
         }
+
+        if (compagnie != null && compagnie.contientNumeroDeVol(this)) {
+            throw new IllegalArgumentException("Un vol avec ce numero existe deja dans cette compagnie");
+        }
+
         if (this.compagnie != null) {
             this.compagnie.removeVolWithoutBidirectional(this);
         }
+
         this.compagnie = compagnie;
+
+        if (compagnie != null) {
+            compagnie.addVolWithoutBidirectional(this);
+        }
     }
 
     protected void setCompagnieWithoutBidirectional(Compagnie compagnie) {
         this.compagnie = compagnie;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public Aeroport getDepart() {
-        return depart;
     }
 
     public void setDepart(Aeroport depart) {
@@ -90,12 +119,20 @@ public class Vol {
         this.arrivee = arrivee;
     }
 
+    // ------------------- Equals and HashCode ------------------
+
     @Override
     public boolean equals(Object obj) {
-        try {
-            return ((Vol) obj).getNumero().equals(this.numero);
-        } catch (Exception e) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof Vol))
             return false;
-        }
+        Vol other = (Vol) obj;
+        return Objects.equals(this.id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

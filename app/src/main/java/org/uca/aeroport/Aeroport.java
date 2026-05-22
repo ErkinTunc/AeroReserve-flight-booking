@@ -8,9 +8,11 @@ public class Aeroport {
 
     private Ville ville;
 
+    // ------------------- Constructors ------------------
     public Aeroport() {
     }
 
+<<<<<<< HEAD
     public Aeroport(String code, String nom , Ville ville){
         this.code = code;
         this.nom = nom;
@@ -21,11 +23,19 @@ public class Aeroport {
 
     public void setCode(String code){ this.code = code; }
 
+=======
+    // ------------------- Methods ------------------
+
+    // ------------------- Getters and Setters ------------------
+>>>>>>> origin/main
     public String getNom() {
         return nom;
     }
 
     public void setNom(String nom) {
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom de l'aeroport est obligatoire");
+        }
         this.nom = nom;
     }
 
@@ -33,7 +43,14 @@ public class Aeroport {
         return ville;
     }
 
+<<<<<<< HEAD
     public void setVille(Ville ville) {
+=======
+    public void setVille(String ville) {
+        if (ville == null || ville.isBlank()) {
+            throw new IllegalArgumentException("La ville de l'aeroport est obligatoire");
+        }
+>>>>>>> origin/main
         this.ville = ville;
     }
 

@@ -4,15 +4,38 @@
 
 [Sujet](https://loriscroce.frama.io/enseignement/genie_logiciel_l3/tp4/) , [Guide JUnit](https://docs.junit.org/5.7.2/user-guide/)
 
-1. Added Gradlew instruction first version 
-2. Implemented the travel package to the project.
-   - Aeroport
-   - Compagnie
-   - Vol
-3. Implemented Date class to the project.
-   - Date
+## Changes
 
-4. will implement reservation package
+1. Added Gradlew instruction first version
+
+##### Compagnie Changes
+
+1. Added **hashset** to the Compagnie class to avoid adding the same vol multiple times.
+2. Added **ZoneDateTime** to the Date class to have a better handling of date and time.
+3. Added **createVol** method to the Compagnie class to create a new vol and add it to the compagnie.
+4. Added an internal flight number generator in Compagnie to produce unique numbers automatically.
+5. Added validation to reject null flight creation parameters.
+6. Added business rule enforcement:
+   - a company cannot contain two flights with the same flight number.
+   - this rule is checked both through `Compagnie.addVol(...)` and `Vol.setCompagnie(...)`.
+7. Added an internal controlled flight number generator:
+   - automatically generated numbers follow the format `VOL-1`, `VOL-2`, etc.
+   - the generator skips already used manual numbers.
+
+##### Vol Changes
+
+1. Added **ZonedDateTime** to the Vol in the place of Date to have a better handling of date and time.
+2. Modified methods to make them work with ZonedDateTime instead of Date
+3. Modified equals and hashCode so that two Vol objects are considered equal only when they have the same technical UUID id.
+   Flight number uniqueness is enforced by Compagnie, not by Vol.equals().
+4. Added _unicity_ for the flights Companies can't have have the same flight number,
+   - Added **UUID** -> internal unique technical id
+   - Added **String numero** -> business flight number, ex: "AF123"
+   - Modified equals and hashcode
+
+#### Tests 
+
+- [Tests](/docs/tests-FlightManagement.md)
 
 ---
 
@@ -20,106 +43,9 @@
 
 ![First UML implementation , not the final one](/docs/img/uml1.jpeg "UML Class Diagram")
 
-![First UML implementation , not the final one](/docs/img/uml2.jpeg "UML Class Diagram")
+#### Design choices
 
-**1. STATE PATTERN** :
-
-- _Escale_ extends _Etape_
-- _Vol_ extends _Escale_
-
-  so we can say that _Vol_ is a type of _Escale_ and _Escale_ is a type of _Etape_.
-
-  ```
-  Vol -> currentState : Etat
-  Vol -> setState(Etat) : void
-  Vol -> getState() : Etat
-  ```
-
-**2. STRATEGY PATTERN**
-
-- _Valeur\<T>_ and othergeneric changes
-  if we want to have
-  - different calculation methods
-  - different validation
-  - different treatment
-
-ex:
-
-```java
-interface PolitiqueTarif {
-   double calculer(...)
-}
-```
-Concrete strategyies:
-
-- TarifEco
-- TarifBusiness
-- TarifPromo
-
-**3. Observer Pattern**
-
-- _Compagnie_ / _Vol_ relation with "general view":
-  if we want to update _view_ when model is changed.
-
-  ```
-  Model -> notify()
-  View -> update()
-  ```
-
-  donc
-
-  ```
-  Vol is changed
-  -> notify observers
-  -> GeneralView update
-  ```
-
-  **4. Composition Pattern**
-
-**5. GENERALIZATION / INHERITANCE**
-
-```
-Escal -> Etat
-```
-
----
-
-### Should be added
-
-**A) FACTORY METHOD**
-
-```
-
-EtatFactory.createEtat(type)
-```
-
-it is important if
-
-- Escale
-- Annule
-- EnVol
-- Retard
-  states will be created
-
-**B) NULL OBJECT**
-Especially for the situation
-
-- _Vol sans escale_
-
-**C) ITERATOR** (If there is escale list)
-if
-
-```
-Vol -> List<Escale>
-```
-
-then
-
-```
-Iterator<Escale>
-```
-
-is essential
+Click here to see [Design choices](/docs/architecture-FlightManagement.md#design-decisions)
 
 ---
 
