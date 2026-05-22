@@ -1,5 +1,6 @@
 package org.uca.aeroport;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -7,6 +8,17 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EscaleTest {
+
+    @Test
+    @DisplayName("Invalidite : une escale doit avoir un aeroport")
+    public void escaleDoitAvoirUnAeroport() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new Escale(
+                        new java.util.Date(1_000_000L),
+                        new java.util.Date(2_000_000L),
+                        null));
+    }
 
     @Test
     public void constructeurDoitInitialiserLesChamps() {
@@ -32,4 +44,3 @@ public class EscaleTest {
         assertEquals(autre, escale.getAeroport());
     }
 }
-

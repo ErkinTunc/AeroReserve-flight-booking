@@ -3,7 +3,9 @@ package org.uca.aeroport;
 import java.time.Duration;
 
 import java.time.ZonedDateTime;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,6 +24,8 @@ public class Vol {
 
     private ZonedDateTime dateArrivee;
 
+    private List<Escale> escales = new ArrayList<>();
+
     // ------------------- Constructors ------------------
 
     protected Vol(String numero) { // protected -> limits direct creation of Vol outside the package/subclasses
@@ -33,6 +37,17 @@ public class Vol {
         this.numero = numero;
     }
     // ------------------- Methods ------------------
+
+    public void addEscale(Escale escale) {
+        if (escale == null) {
+            throw new IllegalArgumentException("Escale obligatoire");
+        }
+        escales.add(escale);
+    }
+
+    public void removeEscale(Escale escale) {
+        escales.remove(escale);
+    }
 
     public Duration obtenirDuree() {
         if (this.dateDepart != null && this.dateArrivee != null) {
@@ -55,6 +70,10 @@ public class Vol {
 
     public String getNumero() {
         return numero;
+    }
+
+    public List<Escale> getEscales() {
+        return Collections.unmodifiableList(escales);
     }
 
     public Aeroport getDepart() {

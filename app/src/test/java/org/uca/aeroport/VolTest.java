@@ -16,6 +16,10 @@
  *      - changing a flight's company updates both sides of the association
  *      - two flights with the same number may have different technical identities
  *      - uniqueness of the flight number is enforced by Compagnie, not by Vol.equals
+ *
+ *  -----
+ *  Added tests for Escale: addEscale, removeEscale, getEscales 
+ * 
  */
 
 package org.uca.aeroport;
@@ -212,5 +216,69 @@ public class VolTest {
         Vol autreVol = new Vol("AF123");
 
         assertThrows(IllegalArgumentException.class, () -> autreVol.setCompagnie(compagnie));
+    }
+
+    @Test
+    @DisplayName("Validite 3.6 : un vol peut contenir une escale")
+    public void volPeutContenirUneEscale() {
+        Vol vol = new Vol("AF123");
+
+        Aeroport aeroport = creerAeroport("Istanbul Airport", "Istanbul");
+
+        Escale escale = new Escale(
+                new java.util.Date(1_000_000L),
+                new java.util.Date(2_000_000L),
+                aeroport);
+
+        vol.addEscale(escale);
+
+        assertTrue(vol.getEscales().contains(escale));
+        assertEquals(1, vol.getEscales().size());
+    }
+
+    @Test
+    @DisplayName("Validite 3.7 : la liste des escales est non modifiable depuis l'exterieur")
+    public void getEscalesRetourneListeNonModifiable() {
+        Vol vol = new Vol("AF123");
+
+        Aeroport aeroport = creerAeroport("Istanbul Airport", "Istanbul");
+
+        Escale escale = new Escale(
+                new java.util.Date(1_000_000L),
+                new java.util.Date(2_000_000L),
+                aeroport);
+
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> vol.getEscales().add(escale));
+    }
+
+    @Test
+    @DisplayName("Validite 3.8 : un vol peut supprimer une escale")
+    public void volPeutSupprimerUneEscale() {
+        Vol vol = new Vol("AF123");
+
+        Aeroport aeroport = creerAeroport("Istanbul Airport", "Istanbul");
+
+        Escale escale = new Escale(
+                new java.util.Date(1_000_000L),
+                new java.util.Date(2_000_000L),
+                aeroport);
+
+        vol.addEscale(escale);
+        vol.removeEscale(escale);
+
+        assertFalse(vol.getEscales().contains(escale));
+        assertTrue(vol.getEscales().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Invalidite 3.9 : impossible d'ajouter une escale nulle")
+    public void addEscaleNullLanceException() {
+        Vol vol = new Vol("AF123");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> vol.addEscale(null));
     }
 }
