@@ -24,8 +24,6 @@
 
 package org.uca.aeroport;
 
-import org.uca.aeroport.Ville;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -53,12 +51,8 @@ public class VolTest {
                 ZoneId.of("Europe/Istanbul"));
     }
 
-    private Aeroport creerAeroport(String nom, String nomVille) {
-        Aeroport aeroport = new Aeroport();
-        aeroport.setNom(nom);
-        Ville ville = new Ville(nomVille);
-        aeroport.setVille(ville);
-        return aeroport;
+    private Aeroport creerAeroport(String code, String nom, String nomVille) {
+        return new Aeroport(code, nom, new Ville(nomVille));
     }
 
     private Vol creerVolSimple(String numero) {
@@ -96,8 +90,8 @@ public class VolTest {
     public void settersDefinissentCorrectementLesInformationsDuVol() {
         Vol vol = new Vol("AF123");
 
-        Aeroport depart = creerAeroport("Charles de Gaulle", "Paris");
-        Aeroport arrivee = creerAeroport("Istanbul Airport", "Istanbul");
+        Aeroport depart = creerAeroport("CDG", "Charles de Gaulle", "Paris");
+        Aeroport arrivee = creerAeroport("IST", "Istanbul Airport", "Istanbul");
         ZonedDateTime dateDepart = dateParis(24, 9, 30);
         ZonedDateTime dateArrivee = dateIstanbul(24, 13, 45);
 
@@ -210,8 +204,8 @@ public class VolTest {
                 "AF123",
                 dateParis(24, 9, 30),
                 dateIstanbul(24, 13, 45),
-                creerAeroport("Charles de Gaulle", "Paris"),
-                creerAeroport("Istanbul Airport", "Istanbul"));
+                creerAeroport("CDG", "Charles de Gaulle", "Paris"),
+                creerAeroport("IST", "Istanbul Airport", "Istanbul"));
 
         Vol autreVol = new Vol("AF123");
 
@@ -223,7 +217,7 @@ public class VolTest {
     public void volPeutContenirUneEscale() {
         Vol vol = new Vol("AF123");
 
-        Aeroport aeroport = creerAeroport("Istanbul Airport", "Istanbul");
+        Aeroport aeroport = creerAeroport("IST", "Istanbul Airport", "Istanbul");
 
         Escale escale = new Escale(
                 new java.util.Date(1_000_000L),
@@ -241,7 +235,7 @@ public class VolTest {
     public void getEscalesRetourneListeNonModifiable() {
         Vol vol = new Vol("AF123");
 
-        Aeroport aeroport = creerAeroport("Istanbul Airport", "Istanbul");
+        Aeroport aeroport = creerAeroport("IST", "Istanbul Airport", "Istanbul");
 
         Escale escale = new Escale(
                 new java.util.Date(1_000_000L),
@@ -258,7 +252,7 @@ public class VolTest {
     public void volPeutSupprimerUneEscale() {
         Vol vol = new Vol("AF123");
 
-        Aeroport aeroport = creerAeroport("Istanbul Airport", "Istanbul");
+        Aeroport aeroport = creerAeroport("IST", "Istanbul Airport", "Istanbul");
 
         Escale escale = new Escale(
                 new java.util.Date(1_000_000L),
@@ -280,5 +274,13 @@ public class VolTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> vol.addEscale(null));
+    }
+
+    @Test
+    @DisplayName("Validite 3.10 : un vol sans escale retourne une liste vide")
+    public void volSansEscaleRetourneListeVide() {
+        Vol vol = new Vol("AF123");
+
+        assertTrue(vol.getEscales().isEmpty());
     }
 }

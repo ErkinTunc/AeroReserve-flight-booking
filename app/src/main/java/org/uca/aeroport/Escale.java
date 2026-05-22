@@ -6,6 +6,8 @@ public class Escale extends Etape {
 
     private Aeroport aeroport;
 
+    // ------------------- Constructors ------------------
+
     public Escale(Date depart, Date arrivee, Aeroport aeroport) {
         super(depart, arrivee);
 
@@ -15,6 +17,8 @@ public class Escale extends Etape {
 
         this.aeroport = aeroport;
     }
+
+    // ------------------- Getters and Setters ------------------
 
     public Aeroport getAeroport() {
         return aeroport;

@@ -5,11 +5,15 @@ public class Ville{
 
     private String nom;
 
+    // ------------------- Constructors ------------------
+
     public Ville() { } 
     
     public Ville(String nom){
         this.nom = nom;
     }
+
+    // ------------------- Getters and Setters ------------------
 
     public String getNom(){
         return nom;
