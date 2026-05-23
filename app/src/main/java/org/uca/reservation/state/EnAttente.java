@@ -5,9 +5,9 @@ import org.uca.reservation.model.Reservation;
 /**
  * État initial d'une réservation.
  * Transitions attendues par les tests :
- *  - payer()  -> PAYEE
- *  - annuler() -> ANNULEE
- *  - confirmer() depuis EN_ATTENTE : interdit
+ * - payer() -> PAYEE
+ * - annuler() -> ANNULEE
+ * - confirmer() depuis EN_ATTENTE : interdit
  */
 public class EnAttente implements EtatReservation {
 
