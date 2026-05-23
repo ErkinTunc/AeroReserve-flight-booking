@@ -33,6 +33,8 @@ import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VolTest {
@@ -142,6 +144,16 @@ public class VolTest {
         assertFalse(compagnie.getVols().contains(vol));
     }
 
+    @Test
+    @DisplayName("Echec 2.4 : on ne peut pas ajouter une escale nulle")
+    public void addEscaleRefuseNull() {
+        Vol vol = new Vol("AF123");
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> vol.addEscale(null));
+    }
+
     // ============== Tests de validité ==============
 
     @Test
@@ -220,8 +232,8 @@ public class VolTest {
         Aeroport aeroport = creerAeroport("IST", "Istanbul Airport", "Istanbul");
 
         Escale escale = new Escale(
-                new java.util.Date(1_000_000L),
-                new java.util.Date(2_000_000L),
+                new Date(1_000_000L),
+                new Date(2_000_000L),
                 aeroport);
 
         vol.addEscale(escale);
@@ -238,8 +250,8 @@ public class VolTest {
         Aeroport aeroport = creerAeroport("IST", "Istanbul Airport", "Istanbul");
 
         Escale escale = new Escale(
-                new java.util.Date(1_000_000L),
-                new java.util.Date(2_000_000L),
+                new Date(1_000_000L),
+                new Date(2_000_000L),
                 aeroport);
 
         assertThrows(
@@ -255,8 +267,8 @@ public class VolTest {
         Aeroport aeroport = creerAeroport("IST", "Istanbul Airport", "Istanbul");
 
         Escale escale = new Escale(
-                new java.util.Date(1_000_000L),
-                new java.util.Date(2_000_000L),
+                new Date(1_000_000L),
+                new Date(2_000_000L),
                 aeroport);
 
         vol.addEscale(escale);
@@ -267,20 +279,11 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Invalidite 3.9 : impossible d'ajouter une escale nulle")
-    public void addEscaleNullLanceException() {
-        Vol vol = new Vol("AF123");
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> vol.addEscale(null));
-    }
-
-    @Test
-    @DisplayName("Validite 3.10 : un vol sans escale retourne une liste vide")
-    public void volSansEscaleRetourneListeVide() {
+    @DisplayName("Validite 3.10 : un vol sans escale contient une liste vide")
+    public void volSansEscaleContientListeVide() {
         Vol vol = new Vol("AF123");
 
         assertTrue(vol.getEscales().isEmpty());
+        assertEquals(0, vol.getEscales().size());
     }
 }
