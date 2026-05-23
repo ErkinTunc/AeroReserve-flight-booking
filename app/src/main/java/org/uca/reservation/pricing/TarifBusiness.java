@@ -1,4 +1,4 @@
-package org.uca.reservation;
+package org.uca.reservation.pricing;
 
 /**
  * Business pricing: +50% on top of the base price.

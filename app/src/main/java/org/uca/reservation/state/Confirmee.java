@@ -1,4 +1,6 @@
-package org.uca.reservation;
+package org.uca.reservation.state;
+
+import org.uca.reservation.model.Reservation;
 
 /*
   La réservation a été confirmée.

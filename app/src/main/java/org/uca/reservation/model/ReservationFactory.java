@@ -1,4 +1,7 @@
-package org.uca.reservation;
+package org.uca.reservation.model;
+
+import org.uca.reservation.pricing.PolitiqueTarif;
+import org.uca.reservation.pricing.TarifEco;
 
 public class ReservationFactory {
 

@@ -1,4 +1,4 @@
-package org.uca.reservation;
+package org.uca.reservation.pricing;
 
 /**
  * Promotional pricing: -20% discount on the base price.

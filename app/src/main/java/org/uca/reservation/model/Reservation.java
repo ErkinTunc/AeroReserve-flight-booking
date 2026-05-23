@@ -20,9 +20,12 @@ public class Reservation {
 
 */
 
-package org.uca.reservation;
+package org.uca.reservation.model;
 
 import java.time.ZonedDateTime;
+
+import org.uca.reservation.state.EnAttente;
+import org.uca.reservation.state.EtatReservation;
 
 /*
      Entité centrale — API publique inchangée par rapport au repo d'origine,

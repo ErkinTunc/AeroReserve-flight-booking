@@ -1,4 +1,6 @@
-package org.uca.reservation;
+package org.uca.reservation.state;
+
+import org.uca.reservation.model.Reservation;
 
 /**
  * État initial d'une réservation.

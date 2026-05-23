@@ -1,4 +1,4 @@
-package org.uca.reservation;
+package org.uca.reservation.pricing;
 
 /**
  * Pricing strategy for reservations (Strategy pattern).

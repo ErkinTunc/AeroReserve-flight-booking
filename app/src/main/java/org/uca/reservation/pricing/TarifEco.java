@@ -1,4 +1,4 @@
-package org.uca.reservation;
+package org.uca.reservation.pricing;
 
 /**
  * Economy pricing: keep base price unchanged.

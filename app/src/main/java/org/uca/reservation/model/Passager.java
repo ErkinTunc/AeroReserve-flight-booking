@@ -1,4 +1,4 @@
-package org.uca.reservation;
+package org.uca.reservation.model;
 
 public class Passager {
 
