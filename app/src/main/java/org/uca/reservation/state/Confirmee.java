@@ -4,7 +4,7 @@ import org.uca.reservation.model.Reservation;
 
 /*
   La réservation a été confirmée.
-  Transitions autorisées : payer, annuler.
+  État final côté client : aucune modification directe possible.
  */
 public class Confirmee implements EtatReservation {
 
@@ -15,12 +15,12 @@ public class Confirmee implements EtatReservation {
 
     @Override
     public void payer(Reservation reservation) {
-        reservation.setEtat(new Payee());
+        throw new TransitionInterditeException("La réservation est déjà confirmée.");
     }
 
     @Override
     public void annuler(Reservation reservation) {
-        reservation.setEtat(new Annulee());
+        throw new TransitionInterditeException("Impossible d'annuler une réservation confirmée.");
     }
 
     @Override
