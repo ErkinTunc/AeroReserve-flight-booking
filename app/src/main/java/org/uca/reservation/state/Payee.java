@@ -20,8 +20,8 @@ public class Payee implements EtatReservation {
 
     @Override
     public void annuler(Reservation reservation) {
-        // Ici tu pourrais éventuellement autoriser une annulation payée,
-        // mais les tests actuels ne le vérifient pas.
+        // Dans ce modèle simplifié, l'annulation d'une réservation payée
+        // nécessite un traitement séparé de remboursement.
         throw new TransitionInterditeException("Contactez le service client pour annuler une réservation payée.");
     }
 

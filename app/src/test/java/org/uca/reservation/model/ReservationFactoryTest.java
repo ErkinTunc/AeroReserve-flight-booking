@@ -83,4 +83,28 @@ public class ReservationFactoryTest {
 
         assertEquals(80.0, reservation.getPrix(), 0.0001);
     }
+
+    @Test
+    public void creerDoitRefuserUnPrixDeBaseNegatif() {
+        Client client = newClient();
+        Passager passager = newPassager();
+        ReservationFactory factory = new ReservationFactory();
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> factory.creer(-100.0, client, passager, newVol()));
+    }
+
+    @Test
+    public void creerDoitRefuserUnePolitiqueTarifaireNull() {
+        Client client = newClient();
+        Passager passager = newPassager();
+        ReservationFactory factory = new ReservationFactory();
+
+        PolitiqueTarif politique = null;
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> factory.creer(100.0, politique, client, passager, newVol()));
+    }
 }

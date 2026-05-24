@@ -2,10 +2,9 @@ package org.uca.reservation.state;
 
 import org.uca.reservation.model.Reservation;
 
-/*
-  État terminal — aucune transition possible.
+/**
+ * État terminal — aucune transition possible.
  */
-
 public class Annulee implements EtatReservation {
 
     @Override
@@ -28,4 +27,3 @@ public class Annulee implements EtatReservation {
         return "ANNULEE";
     }
 }
-

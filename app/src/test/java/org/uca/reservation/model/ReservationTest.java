@@ -45,6 +45,14 @@ public class ReservationTest {
         return new Passager("Dupont", "Alice", 30, "AB123456");
     }
 
+    private Reservation newReservation() {
+        return new ReservationFactory().creer(
+                100.0,
+                newClient(),
+                newPassager(),
+                newVol());
+    }
+
     // --------------------------------- Test methods -------------------
 
     @Test
@@ -173,6 +181,16 @@ public class ReservationTest {
 
         // plus d’annulation possible
         assertThrows(TransitionInterditeException.class, reservation::annuler);
+    }
+
+    @Test
+    public void payerDoitDebiterLePaiement() {
+        Reservation reservation = newReservation();
+
+        reservation.payer();
+
+        assertTrue(reservation.getPaiement().estDebite());
+        assertEquals("PAYEE", reservation.getEtat().libelle());
     }
 
 }

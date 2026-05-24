@@ -10,7 +10,7 @@ public class ReservationFactory {
     // Génération simple de numéros (à adapter à ton implémentation actuelle)
     private static int compteur = 1;
 
-    // --------------------- Factory methods ----------------
+    // -------------------- Factory methods --------------------
 
     // Crée une réservation avec une politique par défaut (eco)
     public Reservation creer(double basePrice, Client client, Passager passager, Vol vol) {

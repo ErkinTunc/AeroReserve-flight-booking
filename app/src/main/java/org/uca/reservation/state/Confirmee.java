@@ -2,9 +2,9 @@ package org.uca.reservation.state;
 
 import org.uca.reservation.model.Reservation;
 
-/*
-  La réservation a été confirmée.
-  État final côté client : aucune modification directe possible.
+/**
+ * La réservation a été confirmée.
+ * État final côté client : aucune modification directe possible.
  */
 public class Confirmee implements EtatReservation {
 

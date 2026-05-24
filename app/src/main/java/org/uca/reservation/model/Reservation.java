@@ -1,4 +1,3 @@
-
 package org.uca.reservation.model;
 
 import java.time.ZonedDateTime;
@@ -9,9 +8,8 @@ import org.uca.reservation.state.EtatReservation;
 import org.uca.aeroport.Vol;
 
 /*
-     Entité centrale — API publique inchangée par rapport au repo d'origine,
-    enrichie avec le pattern State via EtatReservation.
-    
+ *   Entité centrale — API publique inchangée par rapport au repo d'origine,
+ *   enrichie avec le pattern State via EtatReservation.
  */
 public class Reservation {
 
@@ -23,6 +21,8 @@ public class Reservation {
     private final Client client;
     private final Passager passager;
     private final Vol vol;
+
+    private final Paiement paiement;
 
     // -------------------- Constructeur -------------------- //
 
@@ -48,6 +48,7 @@ public class Reservation {
         this.passager = passager;
         this.vol = vol;
         this.etat = new EnAttente();
+        this.paiement = new Paiement(prix);
 
         client.addReservation(this);
     }
@@ -62,6 +63,7 @@ public class Reservation {
 
     public void payer() {
         etat.payer(this);
+        debiter();
     }
 
     public void annuler() {
@@ -69,11 +71,11 @@ public class Reservation {
     }
 
     public void debiter() {
-
+        paiement.debiter();
     }
 
     public void rembourser() {
-
+        paiement.rembourser();
     }
 
     // ------------------------------------------------------------------ //
@@ -106,6 +108,10 @@ public class Reservation {
 
     public Vol getVol() {
         return vol;
+    }
+
+    public Paiement getPaiement() {
+        return paiement;
     }
 
     // Appelé uniquement par les classes d'état — pas par le code métier.
