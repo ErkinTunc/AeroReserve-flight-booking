@@ -2,7 +2,7 @@
 
 **Génie Logiciel L3 - TP3**
 
-[Sujet](https://loriscroce.frama.io/enseignement/genie_logiciel_l3/tp4/) , [Guide JUnit](https://docs.junit.org/5.7.2/user-guide/)
+[Sujet](https://loriscroce.frama.io/enseignement/genie_logiciel_l3/tp4/) , [Guide-JUnit](https://docs.junit.org/5.7.2/user-guide/)
 
 ---
 
@@ -37,6 +37,28 @@
 - Click here to see [Design choices](/docs/flight_management/architecture-FlightManagement.md)
 
 - Click here to see [Tests](/docs/flight_management/tests-FlightManagement.md)
+
+## Package organization
+
+```text
+src/main/java/org/uca
+├── aeroport        # Flight domain: airports, cities, companies, flights, stops and routes
+└── reservation     # Reservation domain: bookings, passengers, payments, pricing and states
+    ├── model       # Core reservation entities
+    ├── pricing     # Pricing strategies
+    └── state       # Reservation state pattern
+```
+
+This package organization separates the flight domain from the reservation domain.
+
+The `aeroport` package contains the classes related to flights, airports, companies, stops and routes.
+
+The `reservation` package contains the reservation logic. It is divided into:
+- `model` for the main reservation entities,
+- `pricing` for fare calculation strategies,
+- `state` for reservation states and transitions.
+
+This structure keeps responsibilities clear and reduces coupling between unrelated parts of the application.
 
 ---
 
