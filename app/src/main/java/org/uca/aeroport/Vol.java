@@ -15,14 +15,14 @@ public class Vol {
     private final String numero;
 
     private Aeroport depart;
-
     private Aeroport arrivee;
 
     private Compagnie compagnie;
 
-    private ZonedDateTime dateDepart;
+    private ZonedDateTime dateHeureDepart;
+    private ZonedDateTime dateHeureArrivee;
 
-    private ZonedDateTime dateArrivee;
+    private Trajet trajet;
 
     private List<Escale> escales = new ArrayList<>();
 
@@ -50,14 +50,16 @@ public class Vol {
     }
 
     public Duration obtenirDuree() {
-        if (this.dateDepart != null && this.dateArrivee != null) {
-            return Duration.between(this.dateDepart, this.dateArrivee);
+        if (this.dateHeureDepart != null && this.dateHeureArrivee != null) {
+            return Duration.between(this.dateHeureDepart, this.dateHeureArrivee);
         }
         return null;
     }
 
     private void verifierDatesCoherentes() {
-        if (dateDepart != null && dateArrivee != null && dateArrivee.isBefore(dateDepart)) {
+        if (dateHeureDepart != null
+                && dateHeureArrivee != null
+                && dateHeureArrivee.isBefore(dateHeureDepart)) {
             throw new IllegalArgumentException("La date d'arrivee doit etre apres la date de depart");
         }
     }
@@ -72,30 +74,65 @@ public class Vol {
         return numero;
     }
 
-    public List<Escale> getEscales() {
-        return Collections.unmodifiableList(escales);
-    }
-
     public Aeroport getDepart() {
         return depart;
     }
 
-    public ZonedDateTime getDateDepart() {
-        return dateDepart;
+    public void setDepart(Aeroport depart) {
+        if (depart == null) {
+            throw new IllegalArgumentException("L'aeroport de depart est obligatoire");
+        }
+        this.depart = depart;
     }
 
-    public void setDateDepart(ZonedDateTime dateDepart) {
-        this.dateDepart = dateDepart;
+    public Aeroport getArrivee() {
+        return arrivee;
+    }
+
+    public void setArrivee(Aeroport arrivee) {
+        if (arrivee == null) {
+            throw new IllegalArgumentException("L'aeroport d'arrivee est obligatoire");
+        }
+        this.arrivee = arrivee;
+    }
+
+    public ZonedDateTime getDateHeureDepart() {
+        return dateHeureDepart;
+    }
+
+    public void setDateHeureDepart(ZonedDateTime dateHeureDepart) {
+        if (dateHeureDepart == null) {
+            throw new IllegalArgumentException("La date de depart est obligatoire");
+        }
+        this.dateHeureDepart = dateHeureDepart;
         verifierDatesCoherentes();
     }
 
-    public ZonedDateTime getDateArrivee() {
-        return dateArrivee;
+    public ZonedDateTime getDateHeureArrivee() {
+        return dateHeureArrivee;
     }
 
-    public void setDateArrivee(ZonedDateTime dateArrivee) {
-        this.dateArrivee = dateArrivee;
+    public void setDateHeureArrivee(ZonedDateTime dateHeureArrivee) {
+        if (dateHeureArrivee == null) {
+            throw new IllegalArgumentException("La date d'arrivee est obligatoire");
+        }
+        this.dateHeureArrivee = dateHeureArrivee;
         verifierDatesCoherentes();
+    }
+
+    public Trajet getTrajet() {
+        return trajet;
+    }
+
+    public void setTrajet(Trajet trajet) {
+        if (trajet == null) {
+            throw new IllegalArgumentException("Le trajet du vol est obligatoire");
+        }
+        this.trajet = trajet;
+    }
+
+    public List<Escale> getEscales() {
+        return Collections.unmodifiableList(escales);
     }
 
     public Compagnie getCompagnie() {
@@ -126,26 +163,16 @@ public class Vol {
         this.compagnie = compagnie;
     }
 
-    public void setDepart(Aeroport depart) {
-        this.depart = depart;
-    }
-
-    public Aeroport getArrivee() {
-        return arrivee;
-    }
-
-    public void setArrivee(Aeroport arrivee) {
-        this.arrivee = arrivee;
-    }
-
     // ------------------- Equals and HashCode ------------------
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!(obj instanceof Vol))
+        }
+        if (!(obj instanceof Vol)) {
             return false;
+        }
         Vol other = (Vol) obj;
         return Objects.equals(this.id, other.id);
     }

@@ -25,21 +25,16 @@ public class Compagnie {
     /**
      * Creer un vol avec un numero specifie
      * 
-     * @param numero          : le numero du vol (ex: "AF123")
-     * @param dateDepart
-     * @param dateArrivee
-     * @param aeroportDepart
-     * @param aeroportArrivee
-     * @return le vol cree
+     * @param numero : le numero du vol (ex: "AF123")
      */
     public Vol creerVol(String numero,
-            ZonedDateTime dateDepart,
-            ZonedDateTime dateArrivee,
+            ZonedDateTime dateHeureDepart,
+            ZonedDateTime dateHeureArrivee,
             Aeroport aeroportDepart,
             Aeroport aeroportArrivee) {
 
         // Validation des paramètres
-        if (numero == null || dateDepart == null || dateArrivee == null
+        if (numero == null || dateHeureDepart == null || dateHeureArrivee == null
                 || aeroportDepart == null || aeroportArrivee == null) {
             throw new IllegalArgumentException("Les informations du vol ne peuvent pas etre nulles");
         }
@@ -50,8 +45,8 @@ public class Compagnie {
 
         Vol vol = new Vol(numero);
 
-        vol.setDateDepart(dateDepart);
-        vol.setDateArrivee(dateArrivee);
+        vol.setDateHeureDepart(dateHeureDepart);
+        vol.setDateHeureArrivee(dateHeureArrivee);
         vol.setDepart(aeroportDepart);
         vol.setArrivee(aeroportArrivee);
 
@@ -61,17 +56,40 @@ public class Compagnie {
     }
 
     /**
+     * Cree un vol associe a un trajet
+     */
+    public Vol creerVol(String numero,
+            ZonedDateTime dateHeureDepart,
+            ZonedDateTime dateHeureArrivee,
+            Trajet trajet) {
+
+        if (numero == null || numero.isBlank()
+                || dateHeureDepart == null
+                || dateHeureArrivee == null
+                || trajet == null) {
+            throw new IllegalArgumentException("Les informations du vol ne peuvent pas etre nulles");
+        }
+
+        if (contientNumero(numero)) {
+            throw new IllegalArgumentException("Un vol avec ce numero existe deja dans cette compagnie");
+        }
+
+        Vol vol = new Vol(numero);
+        vol.setDateHeureDepart(dateHeureDepart);
+        vol.setDateHeureArrivee(dateHeureArrivee);
+        vol.setTrajet(trajet);
+
+        this.addVol(vol);
+
+        return vol;
+    }
+
+    /**
      * Creer un vol avec un numero genere automatiquement
-     * 
-     * @param dateDepart
-     * @param dateArrivee
-     * @param aeroportDepart
-     * @param aeroportArrivee
-     * @return le vol cree
      */
     public Vol creerVol(
             ZonedDateTime dateDepart,
-            ZonedDateTime dateArrivee,
+            ZonedDateTime dateHeureArrivee,
             Aeroport aeroportDepart,
             Aeroport aeroportArrivee) {
 
@@ -80,7 +98,7 @@ public class Compagnie {
         return creerVol(
                 numero,
                 dateDepart,
-                dateArrivee,
+                dateHeureArrivee,
                 aeroportDepart,
                 aeroportArrivee);
     }

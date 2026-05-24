@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,8 +47,8 @@ public class VolTest {
     public void obtenirDureeRetourneLaDureeEntreDepartEtArrivee() {
         Vol vol = new Vol("AF123");
 
-        vol.setDateDepart(dateParis(24, 9, 30));
-        vol.setDateArrivee(dateIstanbul(24, 13, 45));
+        vol.setDateHeureDepart(dateParis(24, 9, 30));
+        vol.setDateHeureArrivee(dateIstanbul(24, 13, 45));
 
         assertEquals(Duration.ofHours(3).plusMinutes(15), vol.obtenirDuree());
     }
@@ -77,14 +78,14 @@ public class VolTest {
 
         vol.setDepart(depart);
         vol.setArrivee(arrivee);
-        vol.setDateDepart(dateDepart);
-        vol.setDateArrivee(dateArrivee);
+        vol.setDateHeureDepart(dateDepart);
+        vol.setDateHeureArrivee(dateArrivee);
 
         assertEquals("AF123", vol.getNumero());
         assertEquals(depart, vol.getDepart());
         assertEquals(arrivee, vol.getArrivee());
-        assertEquals(dateDepart, vol.getDateDepart());
-        assertEquals(dateArrivee, vol.getDateArrivee());
+        assertEquals(dateDepart, vol.getDateHeureDepart());
+        assertEquals(dateArrivee, vol.getDateHeureArrivee());
     }
 
     // ------------------ Tests d'invalidite ------------------
@@ -94,7 +95,7 @@ public class VolTest {
     public void obtenirDureeRetourneNullSiDateDepartManquante() {
         Vol vol = new Vol("AF123");
 
-        vol.setDateArrivee(dateIstanbul(24, 13, 45));
+        vol.setDateHeureArrivee(dateIstanbul(24, 13, 45));
 
         assertNull(vol.obtenirDuree());
     }
@@ -104,7 +105,7 @@ public class VolTest {
     public void obtenirDureeRetourneNullSiDateArriveeManquante() {
         Vol vol = new Vol("AF123");
 
-        vol.setDateDepart(dateParis(24, 9, 30));
+        vol.setDateHeureDepart(dateParis(24, 9, 30));
 
         assertNull(vol.obtenirDuree());
     }
@@ -263,5 +264,35 @@ public class VolTest {
 
         assertTrue(vol.getEscales().isEmpty());
         assertEquals(0, vol.getEscales().size());
+    }
+
+    @Test
+    @DisplayName("Q6 : deux vols peuvent partager le meme trajet")
+    public void deuxVolsPeuventPartagerLeMemeTrajet() {
+        Aeroport paris = new Aeroport("CDG", "Charles de Gaulle", new Ville("Paris"));
+        Aeroport lyon = new Aeroport("LYS", "Saint Exupery", new Ville("Lyon"));
+
+        Escale depart = new Escale(new Date(0), new Date(0), paris);
+        Escale arrivee = new Escale(new Date(3_600_000), new Date(3_600_000), lyon);
+
+        Trajet trajet = new Trajet("CDG-LYS", List.of(depart, arrivee));
+
+        Compagnie compagnie = new Compagnie();
+
+        Vol vol1 = compagnie.creerVol(
+                "AF123",
+                ZonedDateTime.parse("2026-06-01T09:00:00Z"),
+                ZonedDateTime.parse("2026-06-01T10:00:00Z"),
+                trajet);
+
+        Vol vol2 = compagnie.creerVol(
+                "AF124",
+                ZonedDateTime.parse("2026-06-03T09:00:00Z"),
+                ZonedDateTime.parse("2026-06-03T10:00:00Z"),
+                trajet);
+
+        assertSame(trajet, vol1.getTrajet());
+        assertSame(trajet, vol2.getTrajet());
+        assertNotEquals(vol1.getDateHeureDepart(), vol2.getDateHeureDepart());
     }
 }

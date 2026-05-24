@@ -80,8 +80,8 @@ public class CompagnieTest {
                                 depart,
                                 arrivee);
 
-                assertEquals(dateDepart, vol.getDateDepart());
-                assertEquals(dateArrivee, vol.getDateArrivee());
+                assertEquals(dateDepart, vol.getDateHeureDepart());
+                assertEquals(dateArrivee, vol.getDateHeureArrivee());
                 assertEquals(depart, vol.getDepart());
                 assertEquals(arrivee, vol.getArrivee());
         }
