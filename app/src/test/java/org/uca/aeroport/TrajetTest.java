@@ -3,7 +3,7 @@ package org.uca.aeroport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
+import java.time.Duration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,8 +17,17 @@ public class TrajetTest {
     @Test
     @DisplayName("Reussite : le constructeur initialise le code et les etapes")
     public void constructeurDoitInitialiserLesChamps() {
-        Escale depart = new Escale(new Date(0), new Date(0), aeroport("CDG", "Paris"));
-        Escale arrivee = new Escale(new Date(1000), new Date(1000), aeroport("LYS", "Lyon"));
+        EtapeTrajet depart = new EtapeTrajet(
+                0,
+                aeroport("CDG", "Paris"),
+                null,
+                Duration.ZERO);
+
+        EtapeTrajet arrivee = new EtapeTrajet(
+                1,
+                aeroport("LYS", "Lyon"),
+                Duration.ofHours(1),
+                null);
 
         Trajet trajet = new Trajet("CDG-LYS", List.of(depart, arrivee));
 
@@ -31,8 +40,17 @@ public class TrajetTest {
     @Test
     @DisplayName("Invalidite : le constructeur refuse un code null ou vide")
     public void constructeurDoitRefuserCodeInvalide() {
-        Escale depart = new Escale(new Date(0), new Date(0), aeroport("CDG", "Paris"));
-        Escale arrivee = new Escale(new Date(1000), new Date(1000), aeroport("LYS", "Lyon"));
+        EtapeTrajet depart = new EtapeTrajet(
+                0,
+                aeroport("CDG", "Paris"),
+                null,
+                Duration.ZERO);
+
+        EtapeTrajet arrivee = new EtapeTrajet(
+                1,
+                aeroport("LYS", "Lyon"),
+                Duration.ofHours(1),
+                null);
 
         assertThrows(IllegalArgumentException.class,
                 () -> new Trajet(null, List.of(depart, arrivee)));
@@ -44,7 +62,11 @@ public class TrajetTest {
     @Test
     @DisplayName("Invalidite : un trajet doit contenir au moins deux etapes")
     public void constructeurDoitRefuserMoinsDeDeuxEtapes() {
-        Escale depart = new Escale(new Date(0), new Date(0), aeroport("CDG", "Paris"));
+        EtapeTrajet depart = new EtapeTrajet(
+                0,
+                aeroport("CDG", "Paris"),
+                null,
+                Duration.ZERO);
 
         assertThrows(IllegalArgumentException.class,
                 () -> new Trajet("CDG", null));
@@ -56,8 +78,17 @@ public class TrajetTest {
     @Test
     @DisplayName("Validite : getEtapes retourne une liste non modifiable")
     public void getEtapesRetourneListeNonModifiable() {
-        Escale depart = new Escale(new Date(0), new Date(0), aeroport("CDG", "Paris"));
-        Escale arrivee = new Escale(new Date(1000), new Date(1000), aeroport("LYS", "Lyon"));
+        EtapeTrajet depart = new EtapeTrajet(
+                0,
+                aeroport("CDG", "Paris"),
+                null,
+                Duration.ZERO);
+
+        EtapeTrajet arrivee = new EtapeTrajet(
+                1,
+                aeroport("LYS", "Lyon"),
+                Duration.ofHours(1),
+                null);
 
         Trajet trajet = new Trajet("CDG-LYS", List.of(depart, arrivee));
 

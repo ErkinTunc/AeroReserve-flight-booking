@@ -64,6 +64,20 @@ public class Vol {
         }
     }
 
+    public ZonedDateTime dateHeureArriveeEtape(EtapeTrajet etape) {
+        if (etape == null || etape.getDecalageArrivee() == null) {
+            throw new IllegalArgumentException("L'etape ou son decalage d'arrivee est obligatoire");
+        }
+        return dateHeureDepart.plus(etape.getDecalageArrivee());
+    }
+
+    public ZonedDateTime dateHeureDepartEtape(EtapeTrajet etape) {
+        if (etape == null || etape.getDecalageDepart() == null) {
+            throw new IllegalArgumentException("L'etape ou son decalage de depart est obligatoire");
+        }
+        return dateHeureDepart.plus(etape.getDecalageDepart());
+    }
+
     // ------------------- Getters and Setters ------------------
 
     public UUID getId() {

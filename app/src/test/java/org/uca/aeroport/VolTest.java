@@ -267,13 +267,22 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Q6 : deux vols peuvent partager le meme trajet")
+    @DisplayName("3.10 : deux vols reguliers peuvent partager le meme trajet")
     public void deuxVolsPeuventPartagerLeMemeTrajet() {
         Aeroport paris = new Aeroport("CDG", "Charles de Gaulle", new Ville("Paris"));
         Aeroport lyon = new Aeroport("LYS", "Saint Exupery", new Ville("Lyon"));
 
-        Escale depart = new Escale(new Date(0), new Date(0), paris);
-        Escale arrivee = new Escale(new Date(3_600_000), new Date(3_600_000), lyon);
+        EtapeTrajet depart = new EtapeTrajet(
+                0,
+                paris,
+                null,
+                Duration.ZERO);
+
+        EtapeTrajet arrivee = new EtapeTrajet(
+                1,
+                lyon,
+                Duration.ofHours(1),
+                null);
 
         Trajet trajet = new Trajet("CDG-LYS", List.of(depart, arrivee));
 
@@ -294,5 +303,13 @@ public class VolTest {
         assertSame(trajet, vol1.getTrajet());
         assertSame(trajet, vol2.getTrajet());
         assertNotEquals(vol1.getDateHeureDepart(), vol2.getDateHeureDepart());
+
+        assertEquals(
+                ZonedDateTime.parse("2026-06-01T10:00:00Z"),
+                vol1.dateHeureArriveeEtape(arrivee));
+
+        assertEquals(
+                ZonedDateTime.parse("2026-06-03T10:00:00Z"),
+                vol2.dateHeureArriveeEtape(arrivee));
     }
 }
