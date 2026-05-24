@@ -32,7 +32,14 @@
 
 ## Architecture
 
-![First UML implementation , not the final one](/docs/img/uml1.jpeg "UML Class Diagram")
+![First UML implementation , not the final one](/docs/img/final_UML.png "UML Class Diagram")
+
+The diagram above presents the first structural model of the flight and reservation management system.  
+It focuses on the main entities: `Compagnie`, `Vol`, `Aeroport`, `Ville`, `Escale`, `Reservation`, `Client`, and `Passager`.
+
+In the extended implementation, the model was completed with `Trajet` and `EtapeTrajet`.  
+A `Vol` can be associated with a `Trajet`, which represents an ordered route composed of several steps.  
+Each `EtapeTrajet` references an `Aeroport` and stores the temporal offsets used to compute departure and arrival times.
 
 - Click here to see [Design choices](/docs/flight_management/architecture-FlightManagement.md)
 
@@ -54,6 +61,7 @@ This package organization separates the flight domain from the reservation domai
 The `aeroport` package contains the classes related to flights, airports, companies, stops and routes.
 
 The `reservation` package contains the reservation logic. It is divided into:
+
 - `model` for the main reservation entities,
 - `pricing` for fare calculation strategies,
 - `state` for reservation states and transitions.
