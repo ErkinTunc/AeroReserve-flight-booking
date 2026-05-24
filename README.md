@@ -4,9 +4,9 @@
 
 [Sujet](https://loriscroce.frama.io/enseignement/genie_logiciel_l3/tp4/) , [Guide-JUnit](https://docs.junit.org/5.7.2/user-guide/)
 
-This project implements a flight and reservation management system. 
+This project implements a flight and reservation management system.
 
-It models the main concepts of an airline domain, including companies, flights, airports, cities, stopovers, routes, passengers, reservations, payments, pricing strategies and reservation states.  
+It models the main concepts of an airline domain, including companies, flights, airports, cities, stopovers, routes, passengers, reservations, payments, pricing strategies and reservation states.
 
 The project also includes unit tests to validate the main business rules and object interactions.
 
@@ -65,6 +65,20 @@ src/main/java/org/uca
     ├── pricing     # Pricing strategies
     └── state       # Reservation state pattern
 ```
+
+The implementation is divided into two main packages: `aeroport` and `reservation`.
+
+The `aeroport` package contains the flight-related model: `Compagnie`, `Vol`, `Aeroport`, `Ville`, `Escale`, `Trajet` and `EtapeTrajet`.  
+It is responsible for companies, flights, airports, stopovers and route modelling.
+
+The `reservation` package contains the booking-related model.  
+It is divided into three subpackages:
+
+- `model`, for the main reservation entities;
+- `pricing`, for fare calculation strategies;
+- `state`, for reservation states and valid transitions.
+
+This decomposition keeps the flight model independent from reservation-specific rules, while allowing a reservation to reference one concrete `Vol`.
 
 ---
 
