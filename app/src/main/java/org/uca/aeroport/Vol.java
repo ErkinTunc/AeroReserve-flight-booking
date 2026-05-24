@@ -64,17 +64,29 @@ public class Vol {
         }
     }
 
+    private void verifierDateHeureDepartDefinie() {
+        if (dateHeureDepart == null) {
+            throw new IllegalStateException("La date de depart du vol doit etre definie");
+        }
+    }
+
     public ZonedDateTime dateHeureArriveeEtape(EtapeTrajet etape) {
+        verifierDateHeureDepartDefinie();
+
         if (etape == null || etape.getDecalageArrivee() == null) {
             throw new IllegalArgumentException("L'etape ou son decalage d'arrivee est obligatoire");
         }
+
         return dateHeureDepart.plus(etape.getDecalageArrivee());
     }
 
     public ZonedDateTime dateHeureDepartEtape(EtapeTrajet etape) {
+        verifierDateHeureDepartDefinie();
+
         if (etape == null || etape.getDecalageDepart() == null) {
             throw new IllegalArgumentException("L'etape ou son decalage de depart est obligatoire");
         }
+
         return dateHeureDepart.plus(etape.getDecalageDepart());
     }
 

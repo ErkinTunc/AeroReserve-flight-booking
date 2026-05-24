@@ -14,15 +14,25 @@ public final class Trajet {
         if (code == null || code.isBlank()) {
             throw new IllegalArgumentException("Le code du trajet est obligatoire");
         }
+
         if (etapes == null || etapes.size() < 2) {
             throw new IllegalArgumentException("Un trajet doit contenir au moins deux etapes");
+        }
+
+        long nombreOrdresDistincts = etapes.stream()
+                .map(EtapeTrajet::getOrdre)
+                .distinct()
+                .count();
+
+        if (nombreOrdresDistincts != etapes.size()) {
+            throw new IllegalArgumentException("Deux etapes ne peuvent pas avoir le meme ordre");
         }
 
         this.code = code;
         this.etapes = etapes.stream()
                 .sorted(Comparator.comparingInt(EtapeTrajet::getOrdre))
                 .toList();
-    }
+    }   
 
     // ------------------- Getters ------------------
 

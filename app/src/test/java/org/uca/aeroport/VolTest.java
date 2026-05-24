@@ -155,6 +155,38 @@ public class VolTest {
                 () -> vol.dateHeureDepartEtape(null));
     }
 
+    @Test
+    @DisplayName("2.7 Invalidite : dateHeureArriveeEtape refuse une date de depart non definie")
+    public void dateHeureArriveeEtapeRefuseDateDepartNonDefinie() {
+        Vol vol = new Vol("AF123");
+
+        EtapeTrajet etape = new EtapeTrajet(
+                1,
+                creerAeroport("LYS", "Saint Exupery", "Lyon"),
+                Duration.ofHours(1),
+                Duration.ofHours(1).plusMinutes(30));
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> vol.dateHeureArriveeEtape(etape));
+    }
+
+    @Test
+    @DisplayName("2.8 Invalidite : dateHeureDepartEtape refuse une date de depart non definie")
+    public void dateHeureDepartEtapeRefuseDateDepartNonDefinie() {
+        Vol vol = new Vol("AF123");
+
+        EtapeTrajet etape = new EtapeTrajet(
+                1,
+                creerAeroport("LYS", "Saint Exupery", "Lyon"),
+                Duration.ofHours(1),
+                Duration.ofHours(1).plusMinutes(30));
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> vol.dateHeureDepartEtape(etape));
+    }
+
     // ------------------ Tests de validite ------------------
 
     @Test

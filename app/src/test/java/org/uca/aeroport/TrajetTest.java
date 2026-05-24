@@ -77,7 +77,27 @@ public class TrajetTest {
                 () -> new Trajet("CDG", List.of(depart)));
     }
 
-    //-------------------- Tests de Validite ------------------
+    @Test
+    @DisplayName("2.3 Invalidite : le constructeur refuse deux etapes avec le meme ordre")
+    public void constructeurDoitRefuserDeuxEtapesAvecLeMemeOrdre() {
+        EtapeTrajet depart = new EtapeTrajet(
+                0,
+                aeroport("CDG", "Paris"),
+                null,
+                Duration.ZERO);
+
+        EtapeTrajet arrivee = new EtapeTrajet(
+                0,
+                aeroport("LYS", "Lyon"),
+                Duration.ofHours(1),
+                null);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new Trajet("CDG-LYS", List.of(depart, arrivee)));
+    }
+
+    // -------------------- Tests de Validite ------------------
     @Test
     @DisplayName("3.1 Validite : getEtapes retourne une liste non modifiable")
     public void getEtapesRetourneListeNonModifiable() {
