@@ -14,8 +14,9 @@ public class TrajetTest {
         return new Aeroport(code, code, new Ville(ville));
     }
 
+    // ------------------- Tests de reussite ------------------
     @Test
-    @DisplayName("Reussite : le constructeur initialise le code et les etapes")
+    @DisplayName("1.1 Reussite : le constructeur initialise le code et les etapes")
     public void constructeurDoitInitialiserLesChamps() {
         EtapeTrajet depart = new EtapeTrajet(
                 0,
@@ -37,8 +38,9 @@ public class TrajetTest {
         assertTrue(trajet.getEtapes().contains(arrivee));
     }
 
+    // ------------------- Tests d'invalidite ------------------
     @Test
-    @DisplayName("Invalidite : le constructeur refuse un code null ou vide")
+    @DisplayName("2.1 Invalidite : le constructeur refuse un code null ou vide")
     public void constructeurDoitRefuserCodeInvalide() {
         EtapeTrajet depart = new EtapeTrajet(
                 0,
@@ -60,7 +62,7 @@ public class TrajetTest {
     }
 
     @Test
-    @DisplayName("Invalidite : un trajet doit contenir au moins deux etapes")
+    @DisplayName("2.2 Invalidite : un trajet doit contenir au moins deux etapes")
     public void constructeurDoitRefuserMoinsDeDeuxEtapes() {
         EtapeTrajet depart = new EtapeTrajet(
                 0,
@@ -75,8 +77,9 @@ public class TrajetTest {
                 () -> new Trajet("CDG", List.of(depart)));
     }
 
+    //-------------------- Tests de Validite ------------------
     @Test
-    @DisplayName("Validite : getEtapes retourne une liste non modifiable")
+    @DisplayName("3.1 Validite : getEtapes retourne une liste non modifiable")
     public void getEtapesRetourneListeNonModifiable() {
         EtapeTrajet depart = new EtapeTrajet(
                 0,
@@ -98,7 +101,7 @@ public class TrajetTest {
 
     // ------------------- Tests de logique metier ------------------
     @Test
-    @DisplayName("3.1 Validite : les etapes sont triees par ordre")
+    @DisplayName("3.2 Validite : les etapes sont triees par ordre")
     public void etapesSontTrieesParOrdre() {
         EtapeTrajet arrivee = new EtapeTrajet(
                 2,
@@ -126,7 +129,7 @@ public class TrajetTest {
     }
 
     @Test
-    @DisplayName("3.2 Validite : getPremiereEtape retourne la premiere etape")
+    @DisplayName("3.3 Validite : getPremiereEtape retourne la premiere etape")
     public void getPremiereEtapeRetourneLaPremiereEtape() {
         EtapeTrajet arrivee = new EtapeTrajet(
                 1,
@@ -146,7 +149,7 @@ public class TrajetTest {
     }
 
     @Test
-    @DisplayName("3.3 Validite : getDerniereEtape retourne la derniere etape")
+    @DisplayName("3.4 Validite : getDerniereEtape retourne la derniere etape")
     public void getDerniereEtapeRetourneLaDerniereEtape() {
         EtapeTrajet arrivee = new EtapeTrajet(
                 1,
