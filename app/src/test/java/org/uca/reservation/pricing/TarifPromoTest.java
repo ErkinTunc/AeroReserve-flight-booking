@@ -1,12 +1,19 @@
 package org.uca.reservation.pricing;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Vérifie le calcul du tarif promo.
+ */
 public class TarifPromoTest {
 
+    // ------------------ Tests de reussite ------------------
+
     @Test
+    @DisplayName("1.1 Reussite : calculer applique une remise de 20 pourcents")
     public void calculerDoitAppliquerUneRemiseDe20Pourcents() {
         PolitiqueTarif tarif = new TarifPromo();
 

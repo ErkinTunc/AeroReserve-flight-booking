@@ -3,27 +3,31 @@ package org.uca.reservation.model;
 public class Passager {
 
     private final String nom;
+    private final String prenom;
     private final String numeroPasseport;
     private final int age;
     private String telephone;
 
     // -------------------- Constructeur -------------------- //
 
-    public Passager(String nom, String numeroPasseport, int age, String telephone) {
-        if (nom == null || nom.isBlank()) {
-            throw new IllegalArgumentException("Le nom du passager est obligatoire");
+    public Passager(String nom, String prenom, int age, String numeroPasseport) {
+        if (nom == null || nom.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom est obligatoire.");
         }
-        if (numeroPasseport == null || numeroPasseport.isBlank()) {
-            throw new IllegalArgumentException("Le numéro de passeport est obligatoire");
+        if (prenom == null || prenom.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le prenom est obligatoire.");
         }
         if (age < 0) {
-            throw new IllegalArgumentException("L'âge du passager ne peut pas être négatif");
+            throw new IllegalArgumentException("L'age ne peut pas etre negatif.");
+        }
+        if (numeroPasseport == null || numeroPasseport.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le numero de passeport est obligatoire.");
         }
 
         this.nom = nom;
-        this.numeroPasseport = numeroPasseport;
+        this.prenom = prenom;
         this.age = age;
-        this.telephone = telephone;
+        this.numeroPasseport = numeroPasseport;
     }
 
     // -------------------- Getters et Setters -------------------- //
@@ -32,20 +36,26 @@ public class Passager {
         return nom;
     }
 
-    public String getNumeroPasseport() {
-        return numeroPasseport;
+    public String getPrenom() {
+        return prenom;
     }
 
     public int getAge() {
         return age;
     }
 
-    // Getter + Setter pour l'attribut modifiable
+    public String getNumeroPasseport() {
+        return numeroPasseport;
+    }
+
     public String getTelephone() {
         return telephone;
     }
 
     public void setTelephone(String telephone) {
+        if (telephone == null || telephone.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le telephone est obligatoire.");
+        }
         this.telephone = telephone;
     }
 }

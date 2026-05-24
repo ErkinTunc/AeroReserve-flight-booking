@@ -5,12 +5,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Vérifie la création et la validation des aéroports.
+ */
 public class AeroportTest {
 
     // ------------------ Tests de reussite ------------------
 
     @Test
-    @DisplayName("Reussite : le constructeur initialise les champs")
+    @DisplayName("1.1 Reussite : le constructeur initialise les champs")
     public void constructeurDoitInitialiserLesChamps() {
         Ville ville = new Ville("Paris");
         Aeroport aeroport = new Aeroport("CDG", "Charles de Gaulle", ville);
@@ -21,7 +24,7 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Reussite : les setters modifient les champs")
+    @DisplayName("1.2 Reussite : les setters modifient les champs")
     public void settersDoiventModifierLesChamps() {
         Aeroport aeroport = new Aeroport();
 
@@ -37,7 +40,7 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Reussite : toString contient le code, le nom et la ville")
+    @DisplayName("1.3 Reussite : toString contient le code, le nom et la ville")
     public void toStringDoitContenirCodeNomEtVille() {
         Ville ville = new Ville("Paris");
         Aeroport aeroport = new Aeroport("CDG", "Charles de Gaulle", ville);
@@ -49,10 +52,10 @@ public class AeroportTest {
         assertTrue(s.contains("Paris"));
     }
 
-    // ------------------ Tests d'invalidite : constructeur ------------------
+    // ------------------ Tests d'invalidite ------------------
 
     @Test
-    @DisplayName("Invalidite : le constructeur refuse un code null")
+    @DisplayName("2.1 Invalidite : le constructeur refuse un code null")
     public void constructeurDoitRefuserCodeNull() {
         Ville ville = new Ville("Paris");
 
@@ -62,7 +65,7 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Invalidite : le constructeur refuse un code vide")
+    @DisplayName("2.2 Invalidite : le constructeur refuse un code vide")
     public void constructeurDoitRefuserCodeVide() {
         Ville ville = new Ville("Paris");
 
@@ -72,7 +75,7 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Invalidite : le constructeur refuse un nom null")
+    @DisplayName("2.3 Invalidite : le constructeur refuse un nom null")
     public void constructeurDoitRefuserNomNull() {
         Ville ville = new Ville("Paris");
 
@@ -82,7 +85,7 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Invalidite : le constructeur refuse un nom vide")
+    @DisplayName("2.4 Invalidite : le constructeur refuse un nom vide")
     public void constructeurDoitRefuserNomVide() {
         Ville ville = new Ville("Paris");
 
@@ -92,17 +95,15 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Invalidite : le constructeur refuse une ville null")
+    @DisplayName("2.5 Invalidite : le constructeur refuse une ville null")
     public void constructeurDoitRefuserVilleNull() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> new Aeroport("CDG", "Charles de Gaulle", null));
     }
 
-    // ------------------ Tests d'invalidite : setters ------------------
-
     @Test
-    @DisplayName("Invalidite : setCode refuse un code null")
+    @DisplayName("2.6 Invalidite : setCode refuse un code null")
     public void setCodeDoitRefuserCodeNull() {
         Aeroport aeroport = new Aeroport();
 
@@ -112,7 +113,7 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Invalidite : setCode refuse un code vide")
+    @DisplayName("2.7 Invalidite : setCode refuse un code vide")
     public void setCodeDoitRefuserCodeVide() {
         Aeroport aeroport = new Aeroport();
 
@@ -122,7 +123,7 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Invalidite : setNom refuse un nom null")
+    @DisplayName("2.8 Invalidite : setNom refuse un nom null")
     public void setNomDoitRefuserNomNull() {
         Aeroport aeroport = new Aeroport();
 
@@ -132,7 +133,7 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Invalidite : setNom refuse un nom vide")
+    @DisplayName("2.9 Invalidite : setNom refuse un nom vide")
     public void setNomDoitRefuserNomVide() {
         Aeroport aeroport = new Aeroport();
 
@@ -142,7 +143,7 @@ public class AeroportTest {
     }
 
     @Test
-    @DisplayName("Invalidite : setVille refuse une ville null")
+    @DisplayName("2.10 Invalidite : setVille refuse une ville null")
     public void setVilleDoitRefuserVilleNull() {
         Aeroport aeroport = new Aeroport();
 

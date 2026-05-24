@@ -1,38 +1,21 @@
-/**
- * This test class checks the main behavior of the flight management model. 
- * It verifies that a company can create a 
- *      - flight with the correct number 
- *      - dates
- *      - departure airport
- *      - arrival airport
- * 
- * It also ensures that the created flight is automatically linked to the company 
- * and added to its flight collection. 
- * 
- * The failure tests check simple edge cases, such as missing dates or removing 
- * a flight from a company. 
- * 
- * Finally, the validity tests confirm the main business rule: 
- *      every flight created by a company must belong to that company and must not
- *      appear twice in the company’s flight list.
- */
 
 package org.uca.aeroport;
-import org.uca.aeroport.Ville;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.Duration;
-
+/**
+ * Vérifie la création des vols par une compagnie et les règles associées.
+ */
 public class CompagnieTest {
 
-        // ------------------ Méthodes utilitaires pour les tests -----------------
+        // ------------------ Methodes utilitaires pour les tests ------------------
 
         private Aeroport creerAeroport(String nom, String nomVille) {
                 Aeroport aeroport = new Aeroport();
@@ -63,10 +46,10 @@ public class CompagnieTest {
                                 creerAeroport("Istanbul Airport", "Istanbul"));
         }
 
-        // ============== Tests de réussite ==============
+        // ------------------ Tests de reussite ------------------
 
         @Test
-        @DisplayName("Reussite 1.1 : Une compagnie peut creer un vol rattache a elle")
+        @DisplayName("1.1 Reussite : une compagnie peut creer un vol rattache a elle")
         public void creerVolAjouteLeVolALaCompagnie() {
                 Compagnie compagnie = new Compagnie();
                 compagnie.setName("Air France");
@@ -80,7 +63,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Reussite 1.2 : creerVol initialise les dates et les aeroports du vol")
+        @DisplayName("1.2 Reussite : creerVol initialise les dates et les aeroports du vol")
         public void creerVolDefinitLesDatesEtAeroports() {
                 Compagnie compagnie = new Compagnie();
 
@@ -104,7 +87,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Reussite 1.3 : obtenirDuree retourne la duree correcte du vol")
+        @DisplayName("1.3 Reussite : obtenirDuree retourne la duree correcte du vol")
         public void obtenirDureeRetourneLaDureeDuVol() {
                 Compagnie compagnie = new Compagnie();
 
@@ -119,7 +102,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Reussite 1.4 : addVol transfere un vol depuis son ancienne compagnie")
+        @DisplayName("1.4 Reussite : addVol transfere un vol depuis son ancienne compagnie")
         public void addVolRetireLeVolDeSonAncienneCompagnie() {
                 Compagnie ancienneCompagnie = new Compagnie();
                 ancienneCompagnie.setName("Air France");
@@ -141,10 +124,10 @@ public class CompagnieTest {
                 assertTrue(nouvelleCompagnie.getVols().contains(vol));
         }
 
-        // ============== Tests d'échec ==============
+        // ------------------ Tests d'invalidite ------------------
 
         @Test
-        @DisplayName("Echec 2.1 : obtenirDuree retourne null si les dates sont manquantes")
+        @DisplayName("2.1 Invalidite : obtenirDuree retourne null si les dates sont manquantes")
         public void obtenirDureeRetourneNullSiDateDepartOuArriveeManquante() {
                 Vol vol = new Vol("AF123");
 
@@ -152,7 +135,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Echec 2.2 : setCompagnie null retire le vol de la compagnie")
+        @DisplayName("2.2 Invalidite : setCompagnie null retire le vol de la compagnie")
         public void setCompagnieNullRetireLeVolDeLaCompagnie() {
                 Compagnie compagnie = new Compagnie();
 
@@ -170,7 +153,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Echec 2.3 : creerVol refuse une information null")
+        @DisplayName("2.3 Invalidite : creerVol refuse une information null")
         public void creerVolLanceExceptionSiInformationNull() {
                 Compagnie compagnie = new Compagnie();
 
@@ -182,10 +165,10 @@ public class CompagnieTest {
                                 creerAeroport("Istanbul Airport", "Istanbul")));
         }
 
-        // ============== Tests de validité ==============
+        // ------------------ Tests de validite ------------------
 
         @Test
-        @DisplayName("Validite 3.1 : chaque vol cree par une compagnie est rattache a elle")
+        @DisplayName("3.1 Validite : chaque vol cree par une compagnie est rattache a elle")
         public void chaqueVolCreeParCompagnieEstRattacheAElle() {
                 Compagnie compagnie = new Compagnie();
 
@@ -200,7 +183,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Validite 3.2 : une compagnie ne contient pas deux fois le meme vol")
+        @DisplayName("3.2 Validite : une compagnie ne contient pas deux fois le meme vol")
         public void uneCompagnieNeContientPasDeuxFoisLeMemeVol() {
                 Compagnie compagnie = new Compagnie();
 
@@ -218,7 +201,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Validite 3.3 : une compagnie refuse deux vols avec le meme numero")
+        @DisplayName("3.3 Validite : une compagnie refuse deux vols avec le meme numero")
         public void compagnieRefuseDeuxVolsAvecLeMemeNumero() {
                 Compagnie compagnie = new Compagnie();
 
@@ -238,7 +221,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Validite 3.4 : addVol refuse un numero deja present dans la compagnie")
+        @DisplayName("3.4 Validite : addVol refuse un numero deja present dans la compagnie")
         public void addVolRefuseUnNumeroDejaPresentDansLaCompagnie() {
                 Compagnie compagnie = new Compagnie();
 
@@ -255,7 +238,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Validite 3.5 : une compagnie peut generer automatiquement des numeros de vol uniques")
+        @DisplayName("3.5 Validite : une compagnie peut generer automatiquement des numeros de vol uniques")
         public void compagnieGenereAutomatiquementDesNumerosUniques() {
                 Compagnie compagnie = new Compagnie();
 
@@ -277,7 +260,7 @@ public class CompagnieTest {
         }
 
         @Test
-        @DisplayName("Validite 3.6 : le generateur saute un numero deja utilise manuellement")
+        @DisplayName("3.6 Validite : le generateur saute un numero deja utilise manuellement")
         public void generateurSauteUnNumeroDejaUtiliseManuellement() {
                 Compagnie compagnie = new Compagnie();
 

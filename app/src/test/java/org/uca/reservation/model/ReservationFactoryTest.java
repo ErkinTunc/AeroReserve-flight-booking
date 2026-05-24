@@ -1,5 +1,6 @@
 package org.uca.reservation.model;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.uca.aeroport.Aeroport;
@@ -12,13 +13,16 @@ import org.uca.reservation.pricing.TarifBusiness;
 import org.uca.reservation.pricing.TarifEco;
 import org.uca.reservation.pricing.TarifPromo;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.ZonedDateTime;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Vérifie la création des réservations par la factory.
+ */
 public class ReservationFactoryTest {
 
-    // ---------------- Helper methods ----------------
+    // ------------------ Methodes utilitaires pour les tests ------------------
 
     private Vol newVol() {
         Compagnie compagnie = new Compagnie();
@@ -35,20 +39,21 @@ public class ReservationFactoryTest {
     }
 
     private Client newClient() {
-        Client c = new Client();
-        c.setNom("Durand");
-        c.setMail("client@example.com");
-        c.setMoyenPaiement("CB");
-        return c;
+        Client client = new Client();
+        client.setNom("Durand");
+        client.setMail("client@example.com");
+        client.setMoyenPaiement("CB");
+        return client;
     }
 
     private Passager newPassager() {
         return new Passager("Dupont", "Alice", 30, "AB123456");
     }
 
-    // ---------------- Test methods ----------------
+    // ------------------ Tests de reussite ------------------
 
     @Test
+    @DisplayName("1.1 Reussite : creer avec TarifEco conserve le prix de base")
     public void creerAvecTarifEcoDoitConserverLePrixDeBase() {
         Client client = newClient();
         Passager passager = newPassager();
@@ -61,6 +66,7 @@ public class ReservationFactoryTest {
     }
 
     @Test
+    @DisplayName("1.2 Reussite : creer avec TarifBusiness augmente le prix de 50 pourcents")
     public void creerAvecTarifBusinessDoitAugmenterLePrixDe50Pourcents() {
         Client client = newClient();
         Passager passager = newPassager();
@@ -73,6 +79,7 @@ public class ReservationFactoryTest {
     }
 
     @Test
+    @DisplayName("1.3 Reussite : creer avec TarifPromo applique une remise de 20 pourcents")
     public void creerAvecTarifPromoDoitAppliquerUneRemiseDe20Pourcents() {
         Client client = newClient();
         Passager passager = newPassager();
@@ -84,7 +91,10 @@ public class ReservationFactoryTest {
         assertEquals(80.0, reservation.getPrix(), 0.0001);
     }
 
+    // ------------------ Tests d'invalidite ------------------
+
     @Test
+    @DisplayName("2.1 Invalidite : creer refuse un prix de base negatif")
     public void creerDoitRefuserUnPrixDeBaseNegatif() {
         Client client = newClient();
         Passager passager = newPassager();
@@ -96,6 +106,7 @@ public class ReservationFactoryTest {
     }
 
     @Test
+    @DisplayName("2.2 Invalidite : creer refuse une politique tarifaire null")
     public void creerDoitRefuserUnePolitiqueTarifaireNull() {
         Client client = newClient();
         Passager passager = newPassager();

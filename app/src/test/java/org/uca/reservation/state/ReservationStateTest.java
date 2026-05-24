@@ -1,10 +1,6 @@
 package org.uca.reservation.state;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.time.ZonedDateTime;
-
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.uca.aeroport.Aeroport;
@@ -12,15 +8,22 @@ import org.uca.aeroport.Compagnie;
 import org.uca.aeroport.Ville;
 import org.uca.aeroport.Vol;
 
-import org.uca.reservation.model.Reservation;
-
 import org.uca.reservation.model.Client;
 import org.uca.reservation.model.Passager;
+import org.uca.reservation.model.Reservation;
 import org.uca.reservation.model.ReservationFactory;
 
+import java.time.ZonedDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Vérifie les transitions principales d'une réservation.
+ */
 public class ReservationStateTest {
 
-    // ---------------------------- Helper methods ----------------
+    // ------------------ Methodes utilitaires pour les tests ------------------
+
     private Vol newVol() {
         Compagnie compagnie = new Compagnie();
 
@@ -46,9 +49,10 @@ public class ReservationStateTest {
         return new ReservationFactory().creer(100.0, client, passager, newVol());
     }
 
-    // ----------------------------- Test methods ----------------
+    // ------------------ Tests de reussite ------------------
 
     @Test
+    @DisplayName("1.1 Reussite : payer depuis en attente passe en payee")
     public void payerDepuisEnAttenteDoitPasserEnPayee() {
         Reservation reservation = newReservation();
 
@@ -58,6 +62,7 @@ public class ReservationStateTest {
     }
 
     @Test
+    @DisplayName("1.2 Reussite : confirmer apres paiement passe en confirmee")
     public void confirmerApresPaiementDoitPasserEnConfirmee() {
         Reservation reservation = newReservation();
 
@@ -67,7 +72,10 @@ public class ReservationStateTest {
         assertEquals("CONFIRMEE", reservation.getEtat().libelle());
     }
 
+    // ------------------ Tests d'invalidite ------------------
+
     @Test
+    @DisplayName("2.1 Invalidite : confirmer depuis en attente est interdit")
     public void confirmerDepuisEnAttenteDoitEchouer() {
         Reservation reservation = newReservation();
 

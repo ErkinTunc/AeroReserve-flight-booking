@@ -1,7 +1,6 @@
 package org.uca.reservation.model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.uca.aeroport.Aeroport;
@@ -13,9 +12,14 @@ import org.uca.reservation.state.TransitionInterditeException;
 
 import java.time.ZonedDateTime;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Vérifie les règles principales d'une réservation.
+ */
 public class ReservationTest {
 
-    // ---------------- Helper methods ----------------
+    // ------------------ Methodes utilitaires pour les tests ------------------
 
     private Vol newVol() {
         Compagnie compagnie = new Compagnie();
@@ -32,16 +36,14 @@ public class ReservationTest {
     }
 
     private Client newClient() {
-        Client c = new Client();
-        c.setNom("Durand");
-        c.setMail("client@example.com");
-        c.setMoyenPaiement("CB");
-        return c;
+        Client client = new Client();
+        client.setNom("Durand");
+        client.setMail("client@example.com");
+        client.setMoyenPaiement("CB");
+        return client;
     }
 
     private Passager newPassager() {
-        // Adapter aux paramètres de ton constructeur Passager(String, String, int,
-        // String)
         return new Passager("Dupont", "Alice", 30, "AB123456");
     }
 
@@ -53,9 +55,10 @@ public class ReservationTest {
                 newVol());
     }
 
-    // --------------------------------- Test methods -------------------
+    // ------------------ Tests de reussite ------------------
 
     @Test
+    @DisplayName("1.1 Reussite : la creation initialise les champs")
     public void creationReservationDoitInitialiserLesChamps() {
         Client client = newClient();
         Passager passager = newPassager();
@@ -78,12 +81,9 @@ public class ReservationTest {
     }
 
     @Test
+    @DisplayName("1.2 Reussite : payer change l'etat en payee")
     public void payerDevraitChangerLEtatEnPayee() {
-        Client client = newClient();
-        Passager passager = newPassager();
-        ReservationFactory factory = new ReservationFactory();
-
-        Reservation reservation = factory.creer(100.0, client, passager, newVol());
+        Reservation reservation = newReservation();
 
         reservation.payer();
 
@@ -91,12 +91,9 @@ public class ReservationTest {
     }
 
     @Test
+    @DisplayName("1.3 Reussite : confirmer apres paiement donne confirmee")
     public void confirmerApresPaiementDevraitDonnerConfirmee() {
-        Client client = newClient();
-        Passager passager = newPassager();
-        ReservationFactory factory = new ReservationFactory();
-
-        Reservation reservation = factory.creer(100.0, client, passager, newVol());
+        Reservation reservation = newReservation();
 
         reservation.payer();
         reservation.confirmer();
@@ -105,25 +102,21 @@ public class ReservationTest {
     }
 
     @Test
+    @DisplayName("1.4 Reussite : annuler depuis en attente donne annulee")
     public void annulerDepuisEnAttenteDevraitDonnerAnnulee() {
-        Client client = newClient();
-        Passager passager = newPassager();
-        ReservationFactory factory = new ReservationFactory();
-
-        Reservation reservation = factory.creer(100.0, client, passager, newVol());
+        Reservation reservation = newReservation();
 
         reservation.annuler();
 
         assertEquals("ANNULEE", reservation.getEtat().libelle());
     }
 
-    @Test
-    public void confirmerDepuisEnAttenteDoitEchouer() {
-        Client client = newClient();
-        Passager passager = newPassager();
-        ReservationFactory factory = new ReservationFactory();
+    // ------------------ Tests d'invalidite ------------------
 
-        Reservation reservation = factory.creer(100.0, client, passager, newVol());
+    @Test
+    @DisplayName("2.1 Invalidite : confirmer depuis en attente est interdit")
+    public void confirmerDepuisEnAttenteDoitEchouer() {
+        Reservation reservation = newReservation();
 
         assertEquals("EN_ATTENTE", reservation.getEtat().libelle());
 
@@ -131,12 +124,9 @@ public class ReservationTest {
     }
 
     @Test
+    @DisplayName("2.2 Invalidite : annuler depuis payee est interdit")
     public void annulerDepuisPayeeDoitEchouer() {
-        Client client = newClient();
-        Passager passager = newPassager();
-        ReservationFactory factory = new ReservationFactory();
-
-        Reservation reservation = factory.creer(100.0, client, passager, newVol());
+        Reservation reservation = newReservation();
 
         reservation.payer();
         assertEquals("PAYEE", reservation.getEtat().libelle());
@@ -145,12 +135,9 @@ public class ReservationTest {
     }
 
     @Test
+    @DisplayName("2.3 Invalidite : payer depuis confirmee est interdit")
     public void payerDepuisConfirmeeDoitEchouer() {
-        Client client = newClient();
-        Passager passager = newPassager();
-        ReservationFactory factory = new ReservationFactory();
-
-        Reservation reservation = factory.creer(100.0, client, passager, newVol());
+        Reservation reservation = newReservation();
 
         reservation.payer();
         reservation.confirmer();
@@ -159,31 +146,27 @@ public class ReservationTest {
         assertThrows(TransitionInterditeException.class, reservation::payer);
     }
 
+    // ------------------ Tests de validite ------------------
+
     @Test
+    @DisplayName("3.1 Validite : le scenario complet respecte les transitions")
     public void scenarioCompletReservationEco() {
-        Client client = newClient();
-        Passager passager = newPassager();
-        ReservationFactory factory = new ReservationFactory();
+        Reservation reservation = newReservation();
 
-        Reservation reservation = factory.creer(100.0, client, passager, newVol());
-
-        // EN_ATTENTE
         assertEquals("EN_ATTENTE", reservation.getEtat().libelle());
         assertEquals(100.0, reservation.getPrix(), 0.0001);
 
-        // PAYEE
         reservation.payer();
         assertEquals("PAYEE", reservation.getEtat().libelle());
 
-        // CONFIRMEE
         reservation.confirmer();
         assertEquals("CONFIRMEE", reservation.getEtat().libelle());
 
-        // plus d’annulation possible
         assertThrows(TransitionInterditeException.class, reservation::annuler);
     }
 
     @Test
+    @DisplayName("3.2 Validite : payer debite le paiement")
     public void payerDoitDebiterLePaiement() {
         Reservation reservation = newReservation();
 
@@ -192,5 +175,4 @@ public class ReservationTest {
         assertTrue(reservation.getPaiement().estDebite());
         assertEquals("PAYEE", reservation.getEtat().libelle());
     }
-
 }

@@ -8,21 +8,23 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Vérifie le calcul de durée et la validation des étapes.
+ */
 public class EtapeTest {
 
-    // --------------- Helper functions and classes ---------------
+    // ------------------ Methodes utilitaires pour les tests ------------------
 
-    // Petite classe concrète pour tester Etape
     private static class TestEtape extends Etape {
         public TestEtape(Date depart, Date arrivee) {
             super(depart, arrivee);
         }
     }
 
-    // ------------------ Test de Reussite ------------------
+    // ------------------ Tests de reussite ------------------
 
     @Test
-    @DisplayName("Reussite : getDuree retourne zero si une date est absente")
+    @DisplayName("1.1 Reussite : getDuree retourne zero si une date est absente")
     public void getDureeRetourneZeroSiDatesNulles() {
         Etape e1 = new TestEtape(null, null);
         assertEquals(Duration.ZERO, e1.getDuree());
@@ -35,7 +37,7 @@ public class EtapeTest {
     }
 
     @Test
-    @DisplayName("Reussite : getDuree calcule la difference entre depart et arrivee")
+    @DisplayName("1.2 Reussite : getDuree calcule la difference entre depart et arrivee")
     public void getDureeCalculeDifferenceEntreDepartEtArrivee() {
         Date depart = new Date(1_000_000L);
         Date arrivee = new Date(1_000_000L + 3_600_000L + 120_000L);
@@ -45,10 +47,10 @@ public class EtapeTest {
         assertEquals(Duration.ofHours(1).plusMinutes(2), e.getDuree());
     }
 
-    // ------------------ Test d'Invalidite ------------------
+    // ------------------ Tests d'invalidite ------------------
 
     @Test
-    @DisplayName("Invalidite : depart ne peut pas etre apres arrivee")
+    @DisplayName("2.1 Invalidite : depart ne peut pas etre apres arrivee")
     public void departNePeutPasEtreApresArrivee() {
         Date depart = new Date(2_000_000L);
         Date arrivee = new Date(1_000_000L);
@@ -58,9 +60,8 @@ public class EtapeTest {
                 () -> new TestEtape(depart, arrivee));
     }
 
-    // === Setters Tests ===
     @Test
-    @DisplayName("Invalidite : setDepart refuse une date apres arrivee")
+    @DisplayName("2.2 Invalidite : setDepart refuse une date apres arrivee")
     public void setDepartRefuseDateApresArrivee() {
         Etape e = new TestEtape(
                 new Date(1_000_000L),
@@ -72,7 +73,7 @@ public class EtapeTest {
     }
 
     @Test
-    @DisplayName("Invalidite : setArrivee refuse une date avant depart")
+    @DisplayName("2.3 Invalidite : setArrivee refuse une date avant depart")
     public void setArriveeRefuseDateAvantDepart() {
         Etape e = new TestEtape(
                 new Date(1_000_000L),
@@ -82,5 +83,4 @@ public class EtapeTest {
                 IllegalArgumentException.class,
                 () -> e.setArrivee(new Date(500_000L)));
     }
-
 }

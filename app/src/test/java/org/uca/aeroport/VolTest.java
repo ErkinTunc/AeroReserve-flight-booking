@@ -1,27 +1,3 @@
-/**
- * This test class checks the main behavior of the Vol class.
- * It verifies that a flight can correctly store:
- *      - its number
- *      - departure and arrival dates
- *      - departure and arrival airports
- *      - its company
- *
- * It also checks that the flight duration is correctly calculated from the
- * departure and arrival dates.
- *
- * The failure tests check simple edge cases, such as missing departure or
- * arrival dates, and removing a flight from its company.
- *
- * Finally, the validity tests confirm the main business rules:
- *      - changing a flight's company updates both sides of the association
- *      - two flights with the same number may have different technical identities
- *      - uniqueness of the flight number is enforced by Compagnie, not by Vol.equals
- *
- *  -----
- *  Added tests for Escale: addEscale, removeEscale, getEscales 
- * 
- */
-
 package org.uca.aeroport;
 
 import org.junit.jupiter.api.DisplayName;
@@ -30,16 +6,18 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Vérifie les règles principales d'un vol.
+ */
 public class VolTest {
 
-    // ------------------ Méthodes utilitaires pour les tests -----------------
+    // ------------------ Methodes utilitaires pour les tests ------------------
 
     private ZonedDateTime dateParis(int jour, int heure, int minute) {
         return ZonedDateTime.of(
@@ -61,10 +39,10 @@ public class VolTest {
         return new Vol(numero);
     }
 
-    // ============== Tests de réussite ==============
+    // ------------------ Tests de reussite ------------------
 
     @Test
-    @DisplayName("Reussite 1.1 : obtenirDuree retourne la duree entre depart et arrivee")
+    @DisplayName("1.1 Reussite : obtenirDuree retourne la duree entre depart et arrivee")
     public void obtenirDureeRetourneLaDureeEntreDepartEtArrivee() {
         Vol vol = new Vol("AF123");
 
@@ -75,7 +53,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Reussite 1.2 : setCompagnie ajoute le vol a la compagnie")
+    @DisplayName("1.2 Reussite : setCompagnie ajoute le vol a la compagnie")
     public void setCompagnieAjouteLeVolALaCompagnie() {
         Vol vol = creerVolSimple("AF123");
         Compagnie compagnie = new Compagnie();
@@ -88,7 +66,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Reussite 1.3 : les setters definissent les informations du vol")
+    @DisplayName("1.3 Reussite : les setters definissent les informations du vol")
     public void settersDefinissentCorrectementLesInformationsDuVol() {
         Vol vol = new Vol("AF123");
 
@@ -109,10 +87,10 @@ public class VolTest {
         assertEquals(dateArrivee, vol.getDateArrivee());
     }
 
-    // ============== Tests d'échec ==============
+    // ------------------ Tests d'invalidite ------------------
 
     @Test
-    @DisplayName("Echec 2.1 : obtenirDuree retourne null si la date de depart manque")
+    @DisplayName("2.1 Invalidite : obtenirDuree retourne null si la date de depart manque")
     public void obtenirDureeRetourneNullSiDateDepartManquante() {
         Vol vol = new Vol("AF123");
 
@@ -122,7 +100,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Echec 2.2 : obtenirDuree retourne null si la date d'arrivee manque")
+    @DisplayName("2.2 Invalidite : obtenirDuree retourne null si la date d'arrivee manque")
     public void obtenirDureeRetourneNullSiDateArriveeManquante() {
         Vol vol = new Vol("AF123");
 
@@ -132,7 +110,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Echec 2.3 : setCompagnie null retire le vol de son ancienne compagnie")
+    @DisplayName("2.3 Invalidite : setCompagnie null retire le vol de son ancienne compagnie")
     public void setCompagnieNullRetireLeVolDeSonAncienneCompagnie() {
         Vol vol = creerVolSimple("AF123");
         Compagnie compagnie = new Compagnie();
@@ -145,7 +123,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Echec 2.4 : on ne peut pas ajouter une escale nulle")
+    @DisplayName("2.4 Invalidite : on ne peut pas ajouter une escale nulle")
     public void addEscaleRefuseNull() {
         Vol vol = new Vol("AF123");
 
@@ -154,10 +132,10 @@ public class VolTest {
                 () -> vol.addEscale(null));
     }
 
-    // ============== Tests de validité ==============
+    // ------------------ Tests de validite ------------------
 
     @Test
-    @DisplayName("Validite 3.1 : changerCompagnie retire le vol de l'ancienne compagnie")
+    @DisplayName("3.1 Validite : changerCompagnie retire le vol de l'ancienne compagnie")
     public void changerCompagnieRetireLeVolDeLAncienneCompagnie() {
         Vol vol = creerVolSimple("AF123");
 
@@ -176,7 +154,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Validite 3.2 : deux vols avec le meme numero ont des identites differentes")
+    @DisplayName("3.2 Validite : deux vols avec le meme numero ont des identites differentes")
     public void deuxVolsAvecMemeNumeroOntDesIdentitesDifferentes() {
         Vol vol1 = creerVolSimple("AF123");
         Vol vol2 = creerVolSimple("AF123");
@@ -186,7 +164,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Validite 3.3 : deux vols avec des numeros differents ne sont pas egaux")
+    @DisplayName("3.3 Validite : deux vols avec des numeros differents ne sont pas egaux")
     public void deuxVolsAvecNumerosDifferentsNeSontPasEgaux() {
         Vol vol1 = creerVolSimple("AF123");
         Vol vol2 = creerVolSimple("TK456");
@@ -195,7 +173,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Validite 3.4 : un HashSet distingue deux vols avec des identites differentes")
+    @DisplayName("3.4 Validite : un HashSet distingue deux vols avec des identites differentes")
     public void hashSetDistingueDeuxVolsAvecIdentitesDifferentes() {
         Vol vol1 = creerVolSimple("AF123");
         Vol vol2 = creerVolSimple("AF123");
@@ -208,7 +186,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Validite 3.5 : setCompagnie refuse un numero deja present dans la compagnie")
+    @DisplayName("3.5 Validite : setCompagnie refuse un numero deja present dans la compagnie")
     public void setCompagnieRefuseUnNumeroDejaPresentDansLaCompagnie() {
         Compagnie compagnie = new Compagnie();
 
@@ -225,7 +203,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Validite 3.6 : un vol peut contenir une escale")
+    @DisplayName("3.6 Validite : un vol peut contenir une escale")
     public void volPeutContenirUneEscale() {
         Vol vol = new Vol("AF123");
 
@@ -243,7 +221,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Validite 3.7 : la liste des escales est non modifiable depuis l'exterieur")
+    @DisplayName("3.7 Validite : la liste des escales est non modifiable depuis l'exterieur")
     public void getEscalesRetourneListeNonModifiable() {
         Vol vol = new Vol("AF123");
 
@@ -260,7 +238,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Validite 3.8 : un vol peut supprimer une escale")
+    @DisplayName("3.8 Validite : un vol peut supprimer une escale")
     public void volPeutSupprimerUneEscale() {
         Vol vol = new Vol("AF123");
 
@@ -279,7 +257,7 @@ public class VolTest {
     }
 
     @Test
-    @DisplayName("Validite 3.10 : un vol sans escale contient une liste vide")
+    @DisplayName("3.9 Validite : un vol sans escale contient une liste vide")
     public void volSansEscaleContientListeVide() {
         Vol vol = new Vol("AF123");
 

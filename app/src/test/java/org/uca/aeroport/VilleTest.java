@@ -5,12 +5,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Vérifie la création et la validation des villes.
+ */
 public class VilleTest {
 
     // ------------------ Tests de reussite ------------------
 
     @Test
-    @DisplayName("Reussite : le constructeur initialise le nom")
+    @DisplayName("1.1 Reussite : le constructeur initialise le nom")
     public void constructeurDoitInitialiserLeNom() {
         Ville ville = new Ville("Paris");
 
@@ -18,7 +21,7 @@ public class VilleTest {
     }
 
     @Test
-    @DisplayName("Reussite : setNom modifie le nom")
+    @DisplayName("1.2 Reussite : setNom modifie le nom")
     public void setNomDoitModifierLeNom() {
         Ville ville = new Ville("Lyon");
 
@@ -28,7 +31,7 @@ public class VilleTest {
     }
 
     @Test
-    @DisplayName("Reussite : toString retourne le nom")
+    @DisplayName("1.3 Reussite : toString retourne le nom")
     public void toStringRetourneLeNom() {
         Ville ville = new Ville("Nice");
 
@@ -38,7 +41,7 @@ public class VilleTest {
     // ------------------ Tests d'invalidite ------------------
 
     @Test
-    @DisplayName("Invalidite : le constructeur refuse un nom null")
+    @DisplayName("2.1 Invalidite : le constructeur refuse un nom null")
     public void constructeurDoitRefuserNomNull() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -46,7 +49,7 @@ public class VilleTest {
     }
 
     @Test
-    @DisplayName("Invalidite : le constructeur refuse un nom vide")
+    @DisplayName("2.2 Invalidite : le constructeur refuse un nom vide")
     public void constructeurDoitRefuserNomVide() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -54,7 +57,7 @@ public class VilleTest {
     }
 
     @Test
-    @DisplayName("Invalidite : setNom refuse un nom null")
+    @DisplayName("2.3 Invalidite : setNom refuse un nom null")
     public void setNomDoitRefuserNomNull() {
         Ville ville = new Ville("Paris");
 
@@ -64,7 +67,7 @@ public class VilleTest {
     }
 
     @Test
-    @DisplayName("Invalidite : setNom refuse un nom vide")
+    @DisplayName("2.4 Invalidite : setNom refuse un nom vide")
     public void setNomDoitRefuserNomVide() {
         Ville ville = new Ville("Paris");
 

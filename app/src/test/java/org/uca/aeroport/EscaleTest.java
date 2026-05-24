@@ -3,16 +3,20 @@ package org.uca.aeroport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
 import java.time.Duration;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Vérifie la création et la validation des escales.
+ */
 public class EscaleTest {
 
-    // ------------------ Test de Reussite ------------------
+    // ------------------ Tests de reussite ------------------
+
     @Test
-    @DisplayName("Reussite : le constructeur initialise les champs de l'escale")
+    @DisplayName("1.1 Reussite : le constructeur initialise les champs de l'escale")
     public void constructeurDoitInitialiserLesChamps() {
         Date depart = new Date(1_000_000L);
         Date arrivee = new Date(2_000_000L);
@@ -26,7 +30,7 @@ public class EscaleTest {
     }
 
     @Test
-    @DisplayName("Reussite : setAeroport change l'aeroport de l'escale")
+    @DisplayName("1.2 Reussite : setAeroport change l'aeroport de l'escale")
     public void setAeroportDoitChangerLAeroport() {
         Escale escale = new Escale(
                 new Date(1_000_000L),
@@ -41,7 +45,7 @@ public class EscaleTest {
     }
 
     @Test
-    @DisplayName("Reussite : getDuree retourne la duree de l'escale")
+    @DisplayName("1.3 Reussite : getDuree retourne la duree de l'escale")
     public void getDureeRetourneDureeEscale() {
         Aeroport aeroport = new Aeroport("IST", "Istanbul Airport", new Ville("Istanbul"));
 
@@ -53,9 +57,10 @@ public class EscaleTest {
         assertEquals(Duration.ofHours(1), escale.getDuree());
     }
 
-    // ------------------ Test d'Invalidite ------------------
+    // ------------------ Tests d'invalidite ------------------
+
     @Test
-    @DisplayName("Invalidite : une escale doit avoir un aeroport")
+    @DisplayName("2.1 Invalidite : une escale doit avoir un aeroport")
     public void escaleDoitAvoirUnAeroport() {
         assertThrows(
                 IllegalArgumentException.class,
@@ -66,7 +71,7 @@ public class EscaleTest {
     }
 
     @Test
-    @DisplayName("Invalidite : setAeroport refuse un aeroport null")
+    @DisplayName("2.2 Invalidite : setAeroport refuse un aeroport null")
     public void setAeroportRefuseAeroportNull() {
         Escale escale = new Escale(
                 new Date(1_000_000L),
@@ -77,5 +82,4 @@ public class EscaleTest {
                 IllegalArgumentException.class,
                 () -> escale.setAeroport(null));
     }
-
 }

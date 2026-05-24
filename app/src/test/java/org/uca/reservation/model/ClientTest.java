@@ -1,5 +1,6 @@
 package org.uca.reservation.model;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
@@ -12,9 +13,13 @@ import org.uca.aeroport.Compagnie;
 import org.uca.aeroport.Ville;
 import org.uca.aeroport.Vol;
 
+/**
+ * Vérifie les règles principales d'un client.
+ */
 public class ClientTest {
 
-    // -------------------- Helper methods ----------------
+    // ------------------ Methodes utilitaires pour les tests ------------------
+
     private Vol newVol() {
         Compagnie compagnie = new Compagnie();
 
@@ -29,9 +34,18 @@ public class ClientTest {
                 arrivee);
     }
 
-    // --------------------------------------- Test methods -------------------
+    private Reservation newReservation(Client client, String nom, String prenom, int age, String passeport) {
+        return new ReservationFactory().creer(
+                100.0,
+                client,
+                new Passager(nom, prenom, age, passeport),
+                newVol());
+    }
+
+    // ------------------ Tests de reussite ------------------
 
     @Test
+    @DisplayName("1.1 Reussite : les getters et setters stockent les valeurs")
     public void gettersEtSettersDoiventStockerLesValeurs() {
         Client client = new Client();
         client.setNom("Durand");
@@ -46,53 +60,54 @@ public class ClientTest {
     }
 
     @Test
+    @DisplayName("1.2 Reussite : addReservation ajoute une reservation")
+    public void addReservationAjouteUneReservation() {
+        Client client = new Client();
+        Reservation reservation = newReservation(client, "Dupont", "Alice", 30, "AB123456");
+
+        client.addReservation(reservation);
+
+        assertTrue(client.getReservations().contains(reservation));
+    }
+
+    @Test
+    @DisplayName("1.3 Reussite : removeReservation retire la reservation")
+    public void removeReservationRetireLaReservation() {
+        Client client = new Client();
+        Reservation reservation = newReservation(client, "Dupont", "Bob", 40, "CD789012");
+
+        client.addReservation(reservation);
+        client.removeReservation(reservation);
+
+        assertFalse(client.getReservations().contains(reservation));
+    }
+
+    // ------------------ Tests de validite ------------------
+
+    @Test
+    @DisplayName("3.1 Validite : getReservations retourne une liste non modifiable")
     public void getReservationsRetourneUneListeNonModifiable() {
         Client client = new Client();
 
         List<Reservation> reservations = client.getReservations();
 
         assertNotNull(reservations);
-        assertThrows(UnsupportedOperationException.class,
+        assertThrows(
+                UnsupportedOperationException.class,
                 () -> reservations.add(null));
     }
 
     @Test
-    public void addReservationAjouteUneReservation() {
-        Client client = new Client();
-        Reservation r = new ReservationFactory().creer(100.0,
-                client,
-                new Passager("Dupont", "Alice", 30, "AB123456"), newVol());
-
-        client.addReservation(r);
-
-        assertTrue(client.getReservations().contains(r));
-    }
-
-    @Test
-    public void removeReservationRetireLaReservation() {
-        Client client = new Client();
-        Reservation r = new ReservationFactory().creer(100.0,
-                client,
-                new Passager("Dupont", "Bob", 40, "CD789012"), newVol());
-
-        client.addReservation(r);
-        client.removeReservation(r);
-
-        assertFalse(client.getReservations().contains(r));
-    }
-
-    @Test
+    @DisplayName("3.2 Validite : addReservation ignore null et les doublons")
     public void addReservationIgnoreNullEtDoublons() {
         Client client = new Client();
-        Reservation r = new ReservationFactory().creer(100.0,
-                client,
-                new Passager("Dupont", "Claire", 28, "EF345678"), newVol());
+        Reservation reservation = newReservation(client, "Dupont", "Claire", 28, "EF345678");
 
         client.addReservation(null);
-        client.addReservation(r);
-        client.addReservation(r); // doublon
+        client.addReservation(reservation);
+        client.addReservation(reservation);
 
         assertEquals(1, client.getReservations().size());
-        assertTrue(client.getReservations().contains(r));
+        assertTrue(client.getReservations().contains(reservation));
     }
 }
