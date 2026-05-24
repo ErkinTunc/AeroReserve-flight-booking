@@ -95,4 +95,73 @@ public class TrajetTest {
         assertThrows(UnsupportedOperationException.class,
                 () -> trajet.getEtapes().add(depart));
     }
+
+    // ------------------- Tests de logique metier ------------------
+    @Test
+    @DisplayName("3.1 Validite : les etapes sont triees par ordre")
+    public void etapesSontTrieesParOrdre() {
+        EtapeTrajet arrivee = new EtapeTrajet(
+                2,
+                aeroport("LYS", "Lyon"),
+                Duration.ofHours(1),
+                null);
+
+        EtapeTrajet depart = new EtapeTrajet(
+                0,
+                aeroport("CDG", "Paris"),
+                null,
+                Duration.ZERO);
+
+        EtapeTrajet escale = new EtapeTrajet(
+                1,
+                aeroport("DIJ", "Dijon"),
+                Duration.ofMinutes(30),
+                Duration.ofMinutes(45));
+
+        Trajet trajet = new Trajet("CDG-LYS", List.of(arrivee, depart, escale));
+
+        assertEquals(0, trajet.getEtapes().get(0).getOrdre());
+        assertEquals(1, trajet.getEtapes().get(1).getOrdre());
+        assertEquals(2, trajet.getEtapes().get(2).getOrdre());
+    }
+
+    @Test
+    @DisplayName("3.2 Validite : getPremiereEtape retourne la premiere etape")
+    public void getPremiereEtapeRetourneLaPremiereEtape() {
+        EtapeTrajet arrivee = new EtapeTrajet(
+                1,
+                aeroport("LYS", "Lyon"),
+                Duration.ofHours(1),
+                null);
+
+        EtapeTrajet depart = new EtapeTrajet(
+                0,
+                aeroport("CDG", "Paris"),
+                null,
+                Duration.ZERO);
+
+        Trajet trajet = new Trajet("CDG-LYS", List.of(arrivee, depart));
+
+        assertEquals(depart, trajet.getPremiereEtape());
+    }
+
+    @Test
+    @DisplayName("3.3 Validite : getDerniereEtape retourne la derniere etape")
+    public void getDerniereEtapeRetourneLaDerniereEtape() {
+        EtapeTrajet arrivee = new EtapeTrajet(
+                1,
+                aeroport("LYS", "Lyon"),
+                Duration.ofHours(1),
+                null);
+
+        EtapeTrajet depart = new EtapeTrajet(
+                0,
+                aeroport("CDG", "Paris"),
+                null,
+                Duration.ZERO);
+
+        Trajet trajet = new Trajet("CDG-LYS", List.of(arrivee, depart));
+
+        assertEquals(arrivee, trajet.getDerniereEtape());
+    }
 }

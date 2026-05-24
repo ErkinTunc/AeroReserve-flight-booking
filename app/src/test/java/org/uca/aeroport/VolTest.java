@@ -133,6 +133,28 @@ public class VolTest {
                 () -> vol.addEscale(null));
     }
 
+    @Test
+    @DisplayName("2.5 Invalidite : dateHeureArriveeEtape refuse une etape null")
+    public void dateHeureArriveeEtapeRefuseEtapeNull() {
+        Vol vol = new Vol("AF123");
+        vol.setDateHeureDepart(ZonedDateTime.parse("2026-06-01T09:00:00Z"));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> vol.dateHeureArriveeEtape(null));
+    }
+
+    @Test
+    @DisplayName("2.6 Invalidite : dateHeureDepartEtape refuse une etape null")
+    public void dateHeureDepartEtapeRefuseEtapeNull() {
+        Vol vol = new Vol("AF123");
+        vol.setDateHeureDepart(ZonedDateTime.parse("2026-06-01T09:00:00Z"));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> vol.dateHeureDepartEtape(null));
+    }
+
     // ------------------ Tests de validite ------------------
 
     @Test
@@ -311,5 +333,28 @@ public class VolTest {
         assertEquals(
                 ZonedDateTime.parse("2026-06-03T10:00:00Z"),
                 vol2.dateHeureArriveeEtape(arrivee));
+    }
+
+    @Test
+    @DisplayName("3.11 Validite : un vol calcule les heures reelles des etapes du trajet")
+    public void volCalculeLesHeuresReellesDesEtapesDuTrajet() {
+        Vol vol = new Vol("AF123");
+        vol.setDateHeureDepart(ZonedDateTime.parse("2026-06-01T09:00:00Z"));
+
+        Aeroport lyon = new Aeroport("LYS", "Saint Exupery", new Ville("Lyon"));
+
+        EtapeTrajet etape = new EtapeTrajet(
+                1,
+                lyon,
+                Duration.ofHours(1),
+                Duration.ofHours(1).plusMinutes(30));
+
+        assertEquals(
+                ZonedDateTime.parse("2026-06-01T10:00:00Z"),
+                vol.dateHeureArriveeEtape(etape));
+
+        assertEquals(
+                ZonedDateTime.parse("2026-06-01T10:30:00Z"),
+                vol.dateHeureDepartEtape(etape));
     }
 }
