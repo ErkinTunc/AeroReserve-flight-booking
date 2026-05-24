@@ -4,6 +4,12 @@
 
 [Sujet](https://loriscroce.frama.io/enseignement/genie_logiciel_l3/tp4/) , [Guide-JUnit](https://docs.junit.org/5.7.2/user-guide/)
 
+This project implements a flight and reservation management system. 
+
+It models the main concepts of an airline domain, including companies, flights, airports, cities, stopovers, routes, passengers, reservations, payments, pricing strategies and reservation states.  
+
+The project also includes unit tests to validate the main business rules and object interactions.
+
 ---
 
 ## How to run
