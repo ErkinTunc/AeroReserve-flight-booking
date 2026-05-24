@@ -38,41 +38,33 @@ The project also includes unit tests to validate the main business rules and obj
 
 ## Architecture
 
-![First UML implementation , not the final one](/docs/img/final_UML.png "UML Class Diagram")
+![Initial UML model used as a design basis](/docs/img/final_UML.png "UML Class Diagram")
 
-The diagram above presents the first structural model of the flight and reservation management system.  
-It focuses on the main entities: `Compagnie`, `Vol`, `Aeroport`, `Ville`, `Escale`, `Reservation`, `Client`, and `Passager`.
+The diagram above shows the initial UML model used as a design basis for the project.  
+During the implementation, the model was refined to better separate a concrete flight from its route.
 
-In the extended implementation, the model was completed with `Trajet` and `EtapeTrajet`.  
-A `Vol` can be associated with a `Trajet`, which represents an ordered route composed of several steps.  
-Each `EtapeTrajet` references an `Aeroport` and stores the temporal offsets used to compute departure and arrival times.
+In particular, we added `Trajet` and `EtapeTrajet`:
 
-- Click here to see [Design choices](/docs/flight_management/architecture-FlightManagement.md)
+- `Vol` represents a concrete flight with a number, departure and arrival dates, airports, stopovers and reservation information.
+- `Trajet` represents an ordered route.
+- `EtapeTrajet` represents one step of this route, linked to an `Aeroport` and defined by time offsets.
+- `Escale` remains a stopover with its own arrival and departure times, not an airport itself.
 
-- Click here to see [Tests](/docs/flight_management/tests-FlightManagement.md)
+Therefore, this UML should be read as the conceptual starting point of the application, while the source code represents the refined implementation model.
+
+- [Design choices](/docs/flight_management/architecture-FlightManagement.md)
+- [Tests](/docs/flight_management/tests-FlightManagement.md)
 
 ## Package organization
 
 ```text
 src/main/java/org/uca
-├── aeroport        # Flight domain: airports, cities, companies, flights, stops and routes
+├── aeroport        # Flight domain: airports, cities, companies, flights, stopovers and routes
 └── reservation     # Reservation domain: bookings, passengers, payments, pricing and states
     ├── model       # Core reservation entities
     ├── pricing     # Pricing strategies
     └── state       # Reservation state pattern
 ```
-
-This package organization separates the flight domain from the reservation domain.
-
-The `aeroport` package contains the classes related to flights, airports, companies, stops and routes.
-
-The `reservation` package contains the reservation logic. It is divided into:
-
-- `model` for the main reservation entities,
-- `pricing` for fare calculation strategies,
-- `state` for reservation states and transitions.
-
-This structure keeps responsibilities clear and reduces coupling between unrelated parts of the application.
 
 ---
 
