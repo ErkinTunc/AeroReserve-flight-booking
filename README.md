@@ -47,12 +47,6 @@ The project goes beyond representing airline entities: it implements business ru
   />
 </p>
 
-```text
-EN_ATTENTE ── payer() ──> PAYEE ── confirmer() ──> CONFIRMEE
-     │
-     └──── annuler() ──> ANNULEE
-```
-
 For example, `confirmer()` on an unpaid reservation throws `TransitionInterditeException`. Cancelling a paid reservation is also forbidden in the **current simplified model**. These behaviors are covered by [unit tests](app/src/test/java/org/uca/reservation/model/ReservationTest.java), rather than demonstrated by the current command-line entry point.
 
 ### Pricing example
