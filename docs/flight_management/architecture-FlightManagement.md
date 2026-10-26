@@ -1,8 +1,30 @@
 # Design Decisions
 
+## Table of Contents
+
+- [Design Decisions](#design-decisions)
+  - [Table of Contents](#table-of-contents)
+  - [1. Flight Identity and Airline Relationships](#1-flight-identity-and-airline-relationships)
+    - [Flight identity vs flight number](#flight-identity-vs-flight-number)
+    - [Bidirectional association](#bidirectional-association)
+  - [2. Airport and City Relationships](#2-airport-and-city-relationships)
+  - [3. Stopover Modeling](#3-stopover-modeling)
+    - [Escale as an association class](#escale-as-an-association-class)
+  - [4. Reservation Domain and Pricing Design](#4-reservation-domain-and-pricing-design)
+    - [Reservation as a domain entity](#reservation-as-a-domain-entity)
+    - [Client and passenger distinction](#client-and-passenger-distinction)
+    - [Pricing strategy](#pricing-strategy)
+    - [Reservation creation with Factory](#reservation-creation-with-factory)
+  - [5. Reservation Lifecycle and State Transitions](#5-reservation-lifecycle-and-state-transitions)
+    - [Reservation state model](#reservation-state-model)
+    - [Reservation state transitions](#reservation-state-transitions)
+    - [Why State Pattern instead of a simple enum](#why-state-pattern-instead-of-a-simple-enum)
+  - [6. Shared Routes and Regular Flights](#6-shared-routes-and-regular-flights)
+  - [7. Package Organization and Separation of Concerns](#7-package-organization-and-separation-of-concerns)
+
 ---
 
-## Q1 — Flight and company modeling
+## 1. Flight Identity and Airline Relationships
 
 ### Flight identity vs flight number
 
@@ -29,11 +51,11 @@ The association between `Compagnie` and `Vol` is bidirectional:
 
 ---
 
-## Q2 — Airport and city modeling
+## 2. Airport and City Relationships
 
 An `Aeroport` references exactly one `Ville`.
 
-A `Ville` can be served by one or more airports. For example, a large city may have several airports, while each airport is located in one main city.
+A `Ville` can be served by zero or more airports. For example, a large city may have several airports, while each airport is located in one main city.
 
 This gives the following multiplicity:
 
@@ -46,7 +68,7 @@ In the implementation, the relationship is stored only from `Aeroport` to `Ville
 
 ---
 
-## Q3 — Stopover modeling
+## 3. Stopover Modeling
 
 ### Escale as an association class
 
@@ -65,13 +87,13 @@ The chosen model is:
 
 - one `Vol` contains zero or more `Escale`;
 - one `Escale` references exactly one `Aeroport`;
-- no escale is represented by an empty escale collection, not by a fake airport or a `NullEscale`.
+- the absence of stopovers is represented by an empty collection, rather than a fake airport or a `NullEscale`.
 
 In the implementation, `Escale` is represented as a normal class contained by `Vol`. It extends `Etape` only to reuse the common temporal attributes `depart`, `arrivee`, and the derived duration calculation. Conceptually, however, an escale remains an enriched relation between a flight and an airport.
 
 ---
 
-## Q4 — Reservation modeling
+## 4. Reservation Domain and Pricing Design
 
 ### Reservation as a domain entity
 
@@ -124,7 +146,7 @@ By default, the factory uses the economy pricing policy.
 
 ---
 
-## Q5 — Reservation state modeling
+## 5. Reservation Lifecycle and State Transitions
 
 ### Reservation state model
 
@@ -145,9 +167,23 @@ Each state is responsible for deciding which transitions are allowed and which t
 
 ### Reservation state transitions
 
-The reservation lifecycle is modeled with the following transitions:
+<p align="center">
+  <em>
+    The reservation lifecycle is modeled with the following transitions:
+  </em>
+</p>
 
-![Reservation State Diagram](../img/diagrame-d-etat-payer.drawio.png)
+<p align="center">
+  <img
+    src="../img/State Diagram_ Payment Workflow.png"
+    alt="AeroReserve UML Class Diagram"
+    width="650"
+  />
+</p>
+
+
+
+
 
 ```text
 EN_ATTENTE
@@ -184,7 +220,7 @@ For this reason, the State pattern is more explicit and avoids large conditional
 
 ---
 
-## Q6 — Regular flights and shared routes
+## 6. Shared Routes and Regular Flights
 
 The solution can be interpreted as an application of the Flyweight pattern.
 
@@ -203,11 +239,11 @@ The solution can be interpreted as an application of the Flyweight pattern.
 
 This avoids duplicating the same route structure for every regular flight.
 
-To avoid side effects caused by sharing, `Trajet` must be immutable. Its list of steps is sorted at construction time and exposed as a non-modifiable structure. Therefore, several flights can share the same `Trajet` without dangerous aliasing.
+To limit side effects when sharing routes, `Trajet` stores its steps in a sorted, non-modifiable list. Its fields and the fields of `EtapeTrajet` are final, allowing multiple flights to reuse the same route structure. However, referenced `Aeroport` objects remain mutable, so the entire object graph is not deeply immutable.
 
 ---
 
-## Q7 — Package organization
+## 7. Package Organization and Separation of Concerns
 
 ```text
 src/main/java/org/uca
