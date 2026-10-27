@@ -39,3 +39,7 @@ application {
     mainClass = 'org.uca.Start'
 }
 
+tasks.named('run', JavaExec) {
+    standardInput = System.in
+}
+
