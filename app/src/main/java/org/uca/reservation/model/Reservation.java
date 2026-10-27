@@ -1,75 +1,57 @@
 package org.uca.reservation.model;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 
+import org.uca.aeroport.Vol;
 import org.uca.reservation.state.EnAttente;
 import org.uca.reservation.state.EtatReservation;
 
-import org.uca.aeroport.Vol;
-
-/*
- *   Entité centrale — API publique inchangée par rapport au repo d'origine,
- *   enrichie avec le pattern State via EtatReservation.
- */
+/** Aggregate root for a reservation and its simulated payment. */
 public class Reservation {
 
-    private final String numero; // identifiant unique
-    private final ZonedDateTime date; // readonly après construction
-    private final double prix; // readonly après construction
+    private final String numero;
+    private final ZonedDateTime date;
+    private final double prix;
     private EtatReservation etat;
-
     private final Client client;
     private final Passager passager;
     private final Vol vol;
-
     private final Paiement paiement;
 
-    // -------------------- Constructeur -------------------- //
-
-    // Constructeur package-private : passer par ReservationFactory.
     Reservation(String numero, double prix, Client client, Passager passager, Vol vol) {
         if (numero == null || numero.isBlank()) {
-            throw new IllegalArgumentException("Le numero de reservation est obligatoire");
+            throw new IllegalArgumentException("Reservation reference is required");
         }
-        if (client == null) {
-            throw new IllegalArgumentException("Le client est obligatoire");
+        if (!Double.isFinite(prix) || prix < 0) {
+            throw new IllegalArgumentException("Reservation price must be finite and nonnegative");
         }
-        if (passager == null) {
-            throw new IllegalArgumentException("Le passager est obligatoire");
-        }
-        if (vol == null) {
-            throw new IllegalArgumentException("Le vol est obligatoire");
-        }
-
         this.numero = numero;
         this.date = ZonedDateTime.now();
         this.prix = prix;
-        this.client = client;
-        this.passager = passager;
-        this.vol = vol;
+        this.client = Objects.requireNonNull(client, "client");
+        this.passager = Objects.requireNonNull(passager, "passager");
+        this.vol = Objects.requireNonNull(vol, "vol");
         this.etat = new EnAttente();
         this.paiement = new Paiement(prix);
-
         client.addReservation(this);
     }
-
-    // ------------------------------------------------------------------ //
-    // Méthodes métier — délèguent à l'état courant
-    // ------------------------------------------------------------------ //
 
     public void confirmer() {
         etat.confirmer(this);
     }
 
+    /** Preserve the existing API; payment coordination lives in its own service. */
     public void payer() {
-        etat.payer(this);
-        debiter();
+        ReservationPaymentService.pay(this);
     }
 
     public void annuler() {
         etat.annuler(this);
     }
 
+    // Kept for backwards compatibility with existing tests/callers.
+    // The application service now uses Paiement rather than these shortcuts.
     public void debiter() {
         paiement.debiter();
     }
@@ -78,53 +60,26 @@ public class Reservation {
         paiement.rembourser();
     }
 
-    // ------------------------------------------------------------------ //
-    // Accesseurs //
-    // ------------------------------------------------------------------ //
+    public String getNumero() { return numero; }
+    public ZonedDateTime getDate() { return date; }
+    public double getPrix() { return prix; }
+    public Client getClient() { return client; }
+    public Passager getPassager() { return passager; }
+    public EtatReservation getEtat() { return etat; }
+    public Vol getVol() { return vol; }
+    public Paiement getPaiement() { return paiement; }
 
-    public String getNumero() {
-        return numero;
-    }
-
-    public ZonedDateTime getDate() {
-        return date;
-    }
-
-    public double getPrix() {
-        return prix;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public Passager getPassager() {
-        return passager;
-    }
-
-    public EtatReservation getEtat() {
-        return etat;
-    }
-
-    public Vol getVol() {
-        return vol;
-    }
-
-    public Paiement getPaiement() {
-        return paiement;
-    }
-
-    // Appelé uniquement par les classes d'état — pas par le code métier.
+    /**
+     * Legacy state-pattern integration point.
+     * TODO: replace the public setter with controlled transitions; currently callers
+     * can bypass lifecycle rules, so do not expose this domain to untrusted clients.
+     */
     public void setEtat(EtatReservation nouvelEtat) {
-        if (nouvelEtat == null) {
-            throw new IllegalArgumentException("L'etat de reservation est obligatoire");
-        }
-        this.etat = nouvelEtat;
+        this.etat = Objects.requireNonNull(nouvelEtat, "nouvelEtat");
     }
 
     @Override
     public String toString() {
         return "Reservation{" + numero + ", " + etat.libelle() + ", " + prix + "}";
     }
-
 }

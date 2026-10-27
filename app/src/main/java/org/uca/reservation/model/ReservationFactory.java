@@ -1,41 +1,38 @@
 package org.uca.reservation.model;
 
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.uca.aeroport.Vol;
 import org.uca.reservation.pricing.PolitiqueTarif;
 import org.uca.reservation.pricing.TarifEco;
 
-import org.uca.aeroport.Vol;
-
 public class ReservationFactory {
 
-    // Génération simple de numéros (à adapter à ton implémentation actuelle)
-    private static int compteur = 1;
+    // Thread-safe for single-JVM demos; persistent uniqueness requires a database.
+    private static final AtomicInteger NEXT_NUMBER = new AtomicInteger(1);
 
-    // -------------------- Factory methods --------------------
-
-    // Crée une réservation avec une politique par défaut (eco)
     public Reservation creer(double basePrice, Client client, Passager passager, Vol vol) {
         return creer(basePrice, new TarifEco(), client, passager, vol);
     }
 
-    // Surcharge : création avec une politique de tarif explicite
     public Reservation creer(double basePrice, PolitiqueTarif politique,
-            Client client, Passager passager, Vol vol) {
-
-        if (basePrice < 0) {
-            throw new IllegalArgumentException("Le prix de base ne peut pas être négatif");
+                             Client client, Passager passager, Vol vol) {
+        if (!Double.isFinite(basePrice) || basePrice < 0) {
+            throw new IllegalArgumentException("Base price must be finite and nonnegative");
         }
-
         if (politique == null) {
-            throw new IllegalArgumentException("La politique tarifaire est obligatoire");
+            throw new IllegalArgumentException("Pricing policy is required");
         }
+        Objects.requireNonNull(client, "client");
+        Objects.requireNonNull(passager, "passager");
+        Objects.requireNonNull(vol, "vol");
 
         double finalPrice = politique.calculer(basePrice);
-        return new Reservation(generateNumero(), finalPrice, client, passager, vol);
-    }
-
-    // --------------------- Helper methods ----------------
-
-    private String generateNumero() {
-        return "RES-" + (compteur++);
+        if (!Double.isFinite(finalPrice) || finalPrice < 0) {
+            throw new IllegalArgumentException("Final price must be finite and nonnegative");
+        }
+        return new Reservation("RES-" + NEXT_NUMBER.getAndIncrement(),
+                finalPrice, client, passager, vol);
     }
 }
