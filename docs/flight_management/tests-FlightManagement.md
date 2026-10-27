@@ -1,6 +1,6 @@
 # Tests - FlightManagement
 
-This document summarizes the unit tests used to validate the flight and reservation management model.
+This document summarizes the JUnit 5 tests for the flight and reservation model, interactive CLI, and simulated payment workflow.
 
 ---
 
@@ -205,6 +205,19 @@ It checks that:
 - `confirmer()` after payment transitions to `CONFIRMEE`;
 - `confirmer()` directly from `EN_ATTENTE` is forbidden.
 
+### ReservationPaymentRegressionTest
+
+`ReservationPaymentRegressionTest` checks failure cases introduced by the payment coordination refactoring and validates reservation reference generation.
+
+It checks that:
+
+- if a simulated debit fails, the reservation remains `EN_ATTENTE` rather than switching to `PAYEE`;
+- payment is rejected for a cancelled reservation, without debiting it;
+- invalid base prices, including negative values, `NaN` and positive infinity, are rejected;
+- 20 concurrent reservation creations produce 20 distinct reservation references using the atomic counter.
+
+**Scope:** The concurrency test verifies reference uniqueness within one JVM. It does **not** test seat inventory or prevent double-booking.
+
 ---
 
 ## Pricing and reservation factory
@@ -232,3 +245,72 @@ It checks that:
 - creating a reservation with `TarifPromo` applies a 20% discount;
 - creating a reservation with a negative base price is rejected;
 - creating a reservation with a null pricing policy is rejected.
+
+---
+
+## Interactive CLI and local booking workflow
+
+### BookingSessionTest
+
+`BookingSessionTest` verifies the reservation operations available during a local CLI session.
+
+It checks that:
+
+- a promotional reservation is created with the correct price (`160.00 EUR`) and initial `EN_ATTENTE` state;
+- confirming before payment is rejected without changing the reservation state;
+- paying debits the simulated payment and changes the state to `PAYEE`;
+- confirming after payment changes the state to `CONFIRMEE`;
+- paying again after confirmation is rejected;
+- cancelling a pending reservation moves it to `ANNULEE` and prevents payment;
+- looking up an unknown reservation reference throws `NoSuchElementException`.
+
+### InteractiveBookingAppTest
+
+`InteractiveBookingAppTest` checks menu input handling and the console layout with simulated user input.
+
+It checks that:
+
+- an unknown menu option is rejected without crashing the application;
+- choosing `0` exits the application;
+- an invalid passenger age is rejected and the user is prompted again;
+- a valid input sequence creates a reservation with promotional pricing;
+- screen clearing occurs between views when ANSI output is enabled;
+- the application waits for Enter before returning to the main menu;
+- end-of-input (EOF) exits without an exception;
+- the banner, fields and menu are displayed in a centered content column;
+- narrow terminal widths wrap long output without exceeding the configured width;
+- ANSI clear-screen and color codes are retained in the centered layout.
+
+### BookingDemoTest
+
+`BookingDemoTest` verifies the automated demonstration and console color output.
+
+It checks that:
+
+- the demo shows an expected rejection when confirmation is attempted before payment;
+- the demo prints successful simulated payment and confirmation results;
+- the flight duration and successful completion message are displayed;
+- ANSI escape sequences are absent when colors are disabled;
+- cyan, green, yellow and reset ANSI codes are emitted when colors are enabled.
+
+---
+
+## Running the tests
+
+From the repository root:
+
+```bash
+./gradlew clean test
+```
+
+On Windows PowerShell, use `./gradlew.bat clean test` (or `.\gradlew.bat clean test`).
+
+Open the HTML report at:
+
+```text
+app/build/reports/tests/test/index.html
+```
+
+GitHub Actions also runs the Gradle build and tests on pushes and pull requests to `main`.
+
+**Current test boundaries:** Payments are simulated and reservations are kept in memory. There are no database persistence, REST API, or concurrency-safe seat assignment tests yet.

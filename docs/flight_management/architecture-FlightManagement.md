@@ -21,6 +21,15 @@
     - [Why State Pattern instead of a simple enum](#why-state-pattern-instead-of-a-simple-enum)
   - [6. Shared Routes and Regular Flights](#6-shared-routes-and-regular-flights)
   - [7. Package Organization and Separation of Concerns](#7-package-organization-and-separation-of-concerns)
+  - [8. Interactive CLI and Local Booking Session](#8-interactive-cli-and-local-booking-session)
+    - [Why the CLI is separate](#why-the-cli-is-separate)
+    - [Console presentation](#console-presentation)
+  - [9. Payment Coordination and Validation](#9-payment-coordination-and-validation)
+    - [Payment before state change](#payment-before-state-change)
+    - [Defensive validation and reference generation](#defensive-validation-and-reference-generation)
+    - [Known encapsulation limitation](#known-encapsulation-limitation)
+  - [10. Testing and Continuous Integration](#10-testing-and-continuous-integration)
+  - [11. Current Scope and Next Steps](#11-current-scope-and-next-steps)
 
 ---
 
@@ -108,6 +117,7 @@ A reservation has its own identity and business data:
 - passenger
 - flight
 - current state
+- simulated payment (`Paiement`)
 
 This is necessary because a reservation has its own lifecycle: it can be paid, confirmed, or cancelled depending on its current state.
 
@@ -142,7 +152,7 @@ This centralizes reservation creation and keeps the constructor controlled. The 
 - applying a pricing policy;
 - creating a reservation with its client, passenger and flight.
 
-By default, the factory uses the economy pricing policy.
+By default, the factory uses the economy pricing policy. `ReservationFactory` now validates finite, nonnegative prices and generates `RES-*` references using an `AtomicInteger`. This avoids counter races **within a single JVM**, but the references are not persistent or globally unique across application restarts.
 
 ---
 
@@ -176,7 +186,7 @@ Each state is responsible for deciding which transitions are allowed and which t
 <p align="center">
   <img
     src="../img/State Diagram_ Payment Workflow.png"
-    alt="AeroReserve UML Class Diagram"
+    alt="AeroReserve reservation state diagram"
     width="650"
   />
 </p>
@@ -203,7 +213,7 @@ ANNULEE
    -- payer(), confirmer(), annuler() --> forbidden
 ```
 
-Forbidden transitions throw a `TransitionInterditeException`.
+Forbidden transitions throw a `TransitionInterditeException`. Payment is coordinated separately, as described in [Section 9](#9-payment-coordination-and-validation).
 
 ### Why State Pattern instead of a simple enum
 
@@ -234,7 +244,6 @@ The solution can be interpreted as an application of the Flyweight pattern.
 
 - departure date and time;
 - arrival date and time;
-- reservations;
 - flight-specific information.
 
 This avoids duplicating the same route structure for every regular flight.
@@ -246,26 +255,116 @@ To limit side effects when sharing routes, `Trajet` stores its steps in a sorted
 ## 7. Package Organization and Separation of Concerns
 
 ```text
-src/main/java/org/uca
-├── aeroport        # Flight domain: airports, cities, companies, flights, stops and routes
-└── reservation     # Reservation domain: bookings, passengers, payments, pricing and states
-    ├── model       # Core reservation entities
-    ├── pricing     # Pricing strategies
-    └── state       # Reservation state pattern
+app/src/main/java/org/uca/
+├── Start.java              # Application entry point
+├── aeroport/               # Airlines, flights, airports, stopovers and routes
+├── demo/                   # CLI, local booking session, demo data and presentation
+│   ├── InteractiveBookingApp.java
+│   ├── BookingSession.java
+│   ├── BookingDemo.java
+│   ├── DemoFixtures.java
+│   └── ConsoleReporter.java
+└── reservation/
+    ├── model/              # Reservation, payment and reservation creation
+    ├── pricing/            # Pricing strategies
+    └── state/              # State pattern and transition rules
 ```
 
-This package organization separates the flight domain from the reservation domain.
+The project separates three concerns:
 
-The `aeroport` package contains the classes related to flights, airports, companies, stops and routes.
+- `aeroport` defines flights and routes without depending on reservations.
+- `reservation` implements booking rules and references `Vol` from `aeroport`.
+- `demo` provides a local interface over those domain classes; domain rules do not depend on console output.
 
-The `reservation` package contains the reservation logic. It is divided into:
+`Start` only chooses the interactive CLI or the automatic demonstration. This keeps terminal behavior out of the domain model.
 
-- `model` for the main reservation entities;
-- `pricing` for fare calculation strategies;
-- `state` for reservation states and transitions.
+---
 
-The `aeroport` package is independent from `reservation`, because flights, airports and companies can exist without reservations.
+## 8. Interactive CLI and Local Booking Session
 
-The `reservation` package depends only on `aeroport` to associate a reservation with one flight.
+### Why the CLI is separate
 
-This structure keeps responsibilities clear and reduces coupling between unrelated parts of the application.
+`InteractiveBookingApp` reads user input and dispatches menu choices with a `switch`. It does not implement pricing or reservation transition rules itself.
+
+The interactive menu supports viewing the sample flight, comparing fares, creating reservations, simulated payment, confirmation, cancellation of pending bookings, and listing the current session's reservations. The previous scripted demonstration remains available through `--demo` or the menu.
+
+```text
+Start
+  ├── --demo → BookingDemo → domain objects
+  └── default → InteractiveBookingApp
+                  ├── BookingSession → ReservationFactory / Reservation
+                  │                      ├── pricing strategies
+                  │                      └── state and payment logic
+                  └── ConsoleReporter (terminal output only)
+```
+
+`BookingSession` owns a local map of reservation references to `Reservation` objects. It assembles `Client`, `Passager` and the selected pricing policy, then delegates creation to `ReservationFactory`. This is session state **in memory**, not database storage or seat inventory.
+
+### Console presentation
+
+`ConsoleReporter` is responsible for ANSI colors, a centered content column, screen clearing and formatted messages. `InteractiveBookingApp` decides when to render each view and waits for Enter before returning to the menu. Separating them avoids mixing display code with booking rules.
+
+Input parsing is handled by the CLI using `BufferedReader`, required-text checks and bounded integer parsing. Invalid options and forbidden state transitions produce readable messages without requiring changes in the underlying domain model.
+
+---
+
+## 9. Payment Coordination and Validation
+
+### Payment before state change
+
+Previously, `Reservation.payer()` changed the reservation state before debiting its `Paiement`. If debit failed, the reservation could incorrectly remain `PAYEE`.
+
+Now `Reservation.payer()` delegates to the package-private `ReservationPaymentService`, which:
+
+1. Checks whether the current state allows payment through `EtatReservation.peutPayer()`.
+2. Debits the simulated `Paiement`.
+3. Moves the reservation from `EN_ATTENTE` to `PAYEE` only after the debit succeeds.
+
+If the debit throws, the state change is not performed. `confirmer()` still requires a paid reservation; the State pattern continues to reject other invalid transitions.
+
+This is a **local simulated payment flow**, not an atomic database transaction or integration with a payment provider.
+
+### Defensive validation and reference generation
+
+`Reservation` and `ReservationFactory` use `Objects.requireNonNull()` for required object references. The factory and reservation constructor reject negative, `NaN` and infinite prices. Reservation references use a shared `AtomicInteger` for thread-safe increments within the running JVM.
+
+### Known encapsulation limitation
+
+`Reservation.setEtat(...)` is still public for compatibility with the existing State implementation, which means other callers can bypass the intended lifecycle. The public `debiter()` and `rembourser()` shortcuts likewise expose payment operations directly. These are technical debts to address before exposing the domain to untrusted clients. Moving transitions behind a controlled internal API would require a coordinated change to the State classes and their tests.
+
+---
+
+## 10. Testing and Continuous Integration
+
+The project uses **JUnit 5** and **GitHub Actions CI** with Java 21. Domain tests cover flight number uniqueness, bidirectional associations, pricing policies, reservation states and payment behavior.
+
+The recent CLI and payment changes added these focused test classes:
+
+- `BookingDemoTest` — scripted demo behavior.
+- `BookingSessionTest` — local booking actions and state changes.
+- `InteractiveBookingAppTest` — interactive input and menu behavior.
+- `ReservationPaymentRegressionTest` — failed debit, forbidden payment, invalid prices and concurrent reservation-reference generation.
+
+The reference-generation concurrency test checks that simultaneous threads receive distinct IDs. It **does not** verify concurrent seat allocation, because the application has no seat inventory yet.
+
+From the repository root:
+
+```bash
+./gradlew clean test
+./gradlew --console=plain run
+./gradlew --console=plain run --args="--demo"
+```
+
+On Windows PowerShell, use `./gradlew.bat` (or `.\gradlew.bat`) instead. Gradle's `run` task forwards standard input to the CLI. `--console=plain` avoids the animated progress indicator interfering with interactive prompts.
+
+---
+
+## 11. Current Scope and Next Steps
+
+AeroReserve is currently a **local Java domain-model application with an interactive CLI**, not a deployed flight-booking service.
+
+**Implemented:** sample flight and fare selection, in-memory reservations, simulated payment, controlled reservation transitions, input checks, automated tests and CI.
+
+**Not implemented:** persistent reservations, seat availability, concurrent seat-booking protection, an HTTP API, authentication or real payment processing. Reservations are lost when the application exits.
+
+**Next engineering goal:** model seat identity as `(flightId, seatNumber)`, reject competing requests for the same seat, and validate the invariant under concurrency. Once the in-memory booking invariant is tested, move it to PostgreSQL with a database uniqueness constraint and transactional reservation creation, then expose it through a small REST API.
