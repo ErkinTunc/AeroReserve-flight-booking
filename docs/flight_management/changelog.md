@@ -172,3 +172,55 @@ creer(double basePrice, PolitiqueTarif politique, Client client, Passager passag
    - absence of stopovers is represented by an empty List<Escale>;
    - no fake escale object is needed;
    - this keeps the model simpler and avoids invalid domain objects.
+
+---
+
+---
+
+##### Interactive CLI Changes
+
+1. Added `InteractiveBookingApp` to provide an interactive command-line interface.
+2. Implemented a **switch-based menu** supporting:
+   - Displaying flight information.
+   - Comparing pricing strategies.
+   - Creating new reservations.
+   - Processing simulated payments.
+   - Confirming and cancelling reservations.
+   - Listing reservations.
+3. Added input validation to handle invalid user entries.
+4. Preserved the original automated demo as a separate menu option.
+
+##### ConsoleReporter Changes
+
+1. Introduced `ConsoleReporter` to separate terminal presentation from business logic.
+2. Added **ANSI colors** to distinguish:
+   - Successful operations (green).
+   - Expected rejections (yellow).
+   - Section headings (cyan).
+3. Implemented screen clearing between menu operations.
+4. Added centered terminal layouts for improved readability.
+5. Added an option to return to the main menu by pressing Enter.
+6. Used ASCII-compatible output messages to avoid terminal encoding issues.
+
+##### Reservation and Clean Code Changes
+
+1. Separated user interface logic from reservation business logic.
+2. Introduced `BookingSession` to manage reservations during the application session.
+3. Introduced `ReservationPaymentService` to coordinate simulated payments and reservation state transitions.
+4. Improved null validation using `Objects.requireNonNull()`.
+5. Replaced the reservation factory's shared counter with `AtomicInteger` for thread-safe reference generation.
+6. Refactored application startup to keep `Start.java` focused on initialization.
+
+##### Testing and Gradle Changes
+
+1. Added tests for interactive CLI behavior and invalid inputs.
+2. Added regression tests for reservation payment and state transitions.
+3. Configured Gradle to forward standard input to the Java application.
+4. Preserved compatibility with the existing JUnit 5 test suite.
+
+##### Current Limitations
+
+1. Payments are simulated and do not involve a real payment provider.
+2. Reservations are stored in memory and are lost when the application exits.
+3. Seat inventory and concurrent seat booking are not yet implemented.
+4. Database persistence and REST API endpoints are not yet available.
